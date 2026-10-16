@@ -4,7 +4,7 @@ A complete mobile-first trip companion for **Sujay, Niyanth, Vishanu, Pujitha an
 
 ## Start here
 
-The Google Apps Script backend has been deployed and initialized, and `config.js` contains its public endpoint. The local frontend can reach the initialized backend and is ready for member sign-in. **GitHub Pages has not been published.** No privileged credentials belong in this repository.
+Open the hosted app at **[Vietnam Together](https://sujaykatta.github.io/Trip/)**. GitHub Pages uses the included GitHub Actions workflow with HTTPS enforced. The Google Apps Script backend is initialized, and `config.js` contains its public endpoint. Production sign-in uses `FRONTEND_ORIGIN=https://sujaykatta.github.io` in Apps Script properties. No privileged credentials belong in this repository.
 
 For a local preview, open `index.html`, or run:
 
@@ -14,6 +14,8 @@ npm run serve
 ```
 
 Open `http://localhost:4173`, then **Take a look around**. Browser storage works most consistently over localhost or HTTPS. The five account cards always ask for a backend access code. Sample access is a separate, explicitly labeled flow.
+
+The live backend is configured for the hosted site. Localhost remains available for the sample preview; to use live sign-in locally, the organizer must set the backend’s allowed origin accordingly.
 
 Sample expenses, dates, budget and rates are fictional. **No actual flight or PNR is prefilled.** Preview changes and uploaded preview files live only in this browser’s IndexedDB. Reset the sample trip in **My account**. The live backend starts with no expenses, flights or documents.
 
