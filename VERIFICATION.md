@@ -36,3 +36,5 @@ Trip-first Home update: 60 automated tests and 22 browser scenarios passed. The 
 Connection recovery update: 61 automated tests passed, including a delayed Google bridge, a fresh channel on automatic retry, rejection of late frames, exhaustion of both attempts, and recovery on the next sign-in. Live Niyanth sign-in with the original access code succeeded before the update; the reported timeout could not be reproduced. The frontend now allows two 30-second connection attempts without sending credentials before a trusted handshake.
 
 Light-default update: checked with a dark system color scheme and an older saved dark preference; initial render uses light. Explicitly selecting dark still persists after reload. New browser preference key applies the requested one-time default to returning users too.
+
+Name correction: the traveler display name is Vishnu. The legacy `vishanu` ID remains unchanged, preserving account sign-in, password derivation, flight passengers, expense allocations and file permissions. Frontend snapshots also correct older persisted member names for profile/admin reports.

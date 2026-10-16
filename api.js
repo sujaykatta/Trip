@@ -1,6 +1,15 @@
 /* The live transport sends credentials only through a pinned Apps Script message bridge. */
 window.TripAPI = (() => {
   let token = '', bridge = null, ready = null, source = null, origin = '', mode = 'live', demo = null, demoUser = '';
+  // Keep the legacy account ID so saved allocations and password proofs remain valid.
+  function correctMemberNames(result) {
+    if (!result || typeof result !== 'object') return result;
+    if (result.me?.id === 'vishanu') result.me.name = 'Vishnu';
+    for (const key of ['members','adminMembers']) {
+      if (Array.isArray(result[key])) result[key] = result[key].map(member => member.id === 'vishanu' ? {...member,name:'Vishnu'} : member);
+    }
+    return result;
+  }
   const pending = new Map();
   const random = () => Array.from(crypto.getRandomValues(new Uint8Array(32)), n=>n.toString(16).padStart(2,'0')).join('');
   let channel = random();
@@ -11,7 +20,7 @@ window.TripAPI = (() => {
     if (event.data.type === 'trip:ready' && resolveReady && !source) { source=event.source;origin=event.origin;resolveReady?.(); }
     if (event.data.type === 'trip:response' && event.source===source && event.origin===origin) {
       const job=pending.get(event.data.id);if (!job) return;clearTimeout(job.timer);pending.delete(event.data.id);
-      if (event.data.response.ok) job.resolve(event.data.response.result); else job.reject(new Error(event.data.response.error));
+      if (event.data.response.ok) job.resolve(correctMemberNames(event.data.response.result)); else job.reject(new Error(event.data.response.error));
     }
   });
   function connect() {
@@ -67,7 +76,7 @@ window.TripAPI = (() => {
   function snapshot() {
     const visible=r=>!r.deleted && (r.ownerId===demoUser || r.sharedWith?.includes(demoUser));
     const result=structuredClone(demo);delete result.files;delete result.requests;
-    result.me=structuredClone(TripCore.MEMBERS.find(u=>u.id===demoUser));result.expenses=result.expenses.filter(e=>!e.deleted);result.splits=result.splits.filter(s=>result.expenses.some(e=>e.id===s.expenseId && e.version===s.version));result.documents=result.documents.filter(visible);result.flights=result.flights.filter(visible);result.notifications=result.notifications.filter(n=>!n.audience || n.audience.includes(demoUser)).slice(-60).reverse();result.syncedAt=new Date().toISOString();return result;
+    result.me=structuredClone(TripCore.MEMBERS.find(u=>u.id===demoUser));result.expenses=result.expenses.filter(e=>!e.deleted);result.splits=result.splits.filter(s=>result.expenses.some(e=>e.id===s.expenseId && e.version===s.version));result.documents=result.documents.filter(visible);result.flights=result.flights.filter(visible);result.notifications=result.notifications.filter(n=>!n.audience || n.audience.includes(demoUser)).slice(-60).reverse();result.syncedAt=new Date().toISOString();return correctMemberNames(result);
   }
   async function preview(action,p={},requestId) {
     if(action==='load') return snapshot();

@@ -1,6 +1,6 @@
 /* Shared, dependency-free accounting and validation. Synced to backend/Core.gs. */
 var TripCore = (() => {
-  const MEMBERS = ['Sujay', 'Niyanth', 'Vishanu', 'Pujitha', 'Vedavathi'].map((name, i) => ({ id: name.toLowerCase(), name, role: i ? 'member' : 'admin' }));
+  const MEMBERS = ['Sujay', 'Niyanth', 'Vishnu', 'Pujitha', 'Vedavathi'].map((name, i) => ({ id: i === 2 ? 'vishanu' : name.toLowerCase(), name, role: i ? 'member' : 'admin' }));
   const CURRENCIES = { INR: 2, VND: 0, USD: 2, EUR: 2, GBP: 2, SGD: 2, THB: 2, JPY: 0 };
   const CATEGORIES = ['Food & drinks', 'Stay', 'Transport', 'Experiences', 'Shopping', 'Other'];
   const assert = (condition, message) => { if (!condition) throw new Error(message); };

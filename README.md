@@ -1,6 +1,6 @@
 # Vietnam, together.
 
-A complete mobile-first trip companion for **Sujay, Niyanth, Vishanu, Pujitha and Vedavathi**, with a static GitHub Pages frontend, a Google Apps Script backend, Google Sheets records, and private Google Drive attachments.
+A complete mobile-first trip companion for **Sujay, Niyanth, Vishnu, Pujitha and Vedavathi**, with a static GitHub Pages frontend, a Google Apps Script backend, Google Sheets records, and private Google Drive attachments.
 
 ## Start here
 
