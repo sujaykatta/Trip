@@ -1,0 +1,44 @@
+name: Test and publish Vietnam Together
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - name: Browser acceptance tests
+        run: |
+          python3 -m http.server 4173 >/tmp/vietnam-http.log 2>&1 &
+          PLAYWRIGHT_CHANNEL=chromium npm run test:ui
+      - uses: actions/configure-pages@v5
+      - name: Package public frontend only
+        run: |
+          mkdir -p _site
+          cp index.html styles.css app.js api.js core.js config.js admin.js admin-page.js _site/
+          cp -R assets _site/assets
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

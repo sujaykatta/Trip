@@ -1,0 +1,11 @@
+<!doctype html><html><head><base target="_top"></head><body><script>
+const parentOrigin = <?!= origin ?>;
+const channel = <?!= channel ?>;
+window.addEventListener('message', event => {
+  if (event.origin !== parentOrigin || event.source !== window.top || event.data?.channel !== channel || event.data?.type !== 'trip:request') return;
+  const { id, request } = event.data;
+  const reply = response => window.top.postMessage({ type:'trip:response', channel, id, response }, parentOrigin);
+  google.script.run.withSuccessHandler(reply).withFailureHandler(error => reply({ok:false,error:error.message || 'Connection failed.'})).rpc(request);
+});
+window.top.postMessage({type:'trip:ready',channel},parentOrigin);
+</script></body></html>

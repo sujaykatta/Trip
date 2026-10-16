@@ -1,0 +1,448 @@
+{
+  "members": [
+    {
+      "id": "sujay",
+      "name": "Sujay",
+      "role": "admin"
+    },
+    {
+      "id": "niyanth",
+      "name": "Niyanth",
+      "role": "member"
+    },
+    {
+      "id": "vishanu",
+      "name": "Vishanu",
+      "role": "member"
+    },
+    {
+      "id": "pujitha",
+      "name": "Pujitha",
+      "role": "member"
+    },
+    {
+      "id": "vedavathi",
+      "name": "Vedavathi",
+      "role": "member"
+    }
+  ],
+  "expenses": [
+    {
+      "title": "Old Town riverside stay",
+      "originalMinor": 1800000,
+      "currency": "INR",
+      "rate": "1",
+      "baseMinor": 1800000,
+      "category": "Stay",
+      "date": "2026-11-12",
+      "payerId": "sujay",
+      "notes": "Illustrative sample expense. Not a real booking.",
+      "splitType": "equal",
+      "allocations": {},
+      "id": "sample-expense-0",
+      "ownerId": "sujay",
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "title": "A taste of Hanoi",
+      "originalMinor": 420000,
+      "currency": "INR",
+      "rate": "1",
+      "baseMinor": 420000,
+      "category": "Food & drinks",
+      "date": "2026-11-12",
+      "payerId": "niyanth",
+      "notes": "Illustrative sample expense. Not a real booking.",
+      "splitType": "equal",
+      "allocations": {},
+      "id": "sample-expense-1",
+      "ownerId": "niyanth",
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "title": "Ha Long Bay day cruise",
+      "originalMinor": 1560000,
+      "currency": "INR",
+      "rate": "1",
+      "baseMinor": 1560000,
+      "category": "Experiences",
+      "date": "2026-11-13",
+      "payerId": "vishanu",
+      "notes": "Illustrative sample expense. Not a real booking.",
+      "splitType": "equal",
+      "allocations": {},
+      "id": "sample-expense-2",
+      "ownerId": "vishanu",
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "title": "Airport to the city",
+      "originalMinor": 220000,
+      "currency": "INR",
+      "rate": "1",
+      "baseMinor": 220000,
+      "category": "Transport",
+      "date": "2026-11-13",
+      "payerId": "pujitha",
+      "notes": "Illustrative sample expense. Not a real booking.",
+      "splitType": "equal",
+      "allocations": {},
+      "id": "sample-expense-3",
+      "ownerId": "pujitha",
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "title": "Coffee, with a view",
+      "originalMinor": 56000,
+      "currency": "INR",
+      "rate": "1",
+      "baseMinor": 56000,
+      "category": "Food & drinks",
+      "date": "2026-11-14",
+      "payerId": "vedavathi",
+      "notes": "Illustrative sample expense. Not a real booking.",
+      "splitType": "equal",
+      "allocations": {},
+      "id": "sample-expense-4",
+      "ownerId": "vedavathi",
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "title": "Hoi An lantern workshop",
+      "originalMinor": 400000,
+      "currency": "INR",
+      "rate": "1",
+      "baseMinor": 400000,
+      "category": "Experiences",
+      "date": "2026-11-14",
+      "payerId": "sujay",
+      "notes": "Illustrative sample expense. Not a real booking.",
+      "splitType": "equal",
+      "allocations": {},
+      "id": "sample-expense-5",
+      "ownerId": "sujay",
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z"
+    }
+  ],
+  "splits": [
+    {
+      "userId": "sujay",
+      "amountMinor": 360000,
+      "expenseId": "sample-expense-0",
+      "version": 1
+    },
+    {
+      "userId": "niyanth",
+      "amountMinor": 360000,
+      "expenseId": "sample-expense-0",
+      "version": 1
+    },
+    {
+      "userId": "vishanu",
+      "amountMinor": 360000,
+      "expenseId": "sample-expense-0",
+      "version": 1
+    },
+    {
+      "userId": "pujitha",
+      "amountMinor": 360000,
+      "expenseId": "sample-expense-0",
+      "version": 1
+    },
+    {
+      "userId": "vedavathi",
+      "amountMinor": 360000,
+      "expenseId": "sample-expense-0",
+      "version": 1
+    },
+    {
+      "userId": "sujay",
+      "amountMinor": 84000,
+      "expenseId": "sample-expense-1",
+      "version": 1
+    },
+    {
+      "userId": "niyanth",
+      "amountMinor": 84000,
+      "expenseId": "sample-expense-1",
+      "version": 1
+    },
+    {
+      "userId": "vishanu",
+      "amountMinor": 84000,
+      "expenseId": "sample-expense-1",
+      "version": 1
+    },
+    {
+      "userId": "pujitha",
+      "amountMinor": 84000,
+      "expenseId": "sample-expense-1",
+      "version": 1
+    },
+    {
+      "userId": "vedavathi",
+      "amountMinor": 84000,
+      "expenseId": "sample-expense-1",
+      "version": 1
+    },
+    {
+      "userId": "sujay",
+      "amountMinor": 312000,
+      "expenseId": "sample-expense-2",
+      "version": 1
+    },
+    {
+      "userId": "niyanth",
+      "amountMinor": 312000,
+      "expenseId": "sample-expense-2",
+      "version": 1
+    },
+    {
+      "userId": "vishanu",
+      "amountMinor": 312000,
+      "expenseId": "sample-expense-2",
+      "version": 1
+    },
+    {
+      "userId": "pujitha",
+      "amountMinor": 312000,
+      "expenseId": "sample-expense-2",
+      "version": 1
+    },
+    {
+      "userId": "vedavathi",
+      "amountMinor": 312000,
+      "expenseId": "sample-expense-2",
+      "version": 1
+    },
+    {
+      "userId": "sujay",
+      "amountMinor": 44000,
+      "expenseId": "sample-expense-3",
+      "version": 1
+    },
+    {
+      "userId": "niyanth",
+      "amountMinor": 44000,
+      "expenseId": "sample-expense-3",
+      "version": 1
+    },
+    {
+      "userId": "vishanu",
+      "amountMinor": 44000,
+      "expenseId": "sample-expense-3",
+      "version": 1
+    },
+    {
+      "userId": "pujitha",
+      "amountMinor": 44000,
+      "expenseId": "sample-expense-3",
+      "version": 1
+    },
+    {
+      "userId": "vedavathi",
+      "amountMinor": 44000,
+      "expenseId": "sample-expense-3",
+      "version": 1
+    },
+    {
+      "userId": "sujay",
+      "amountMinor": 11200,
+      "expenseId": "sample-expense-4",
+      "version": 1
+    },
+    {
+      "userId": "niyanth",
+      "amountMinor": 11200,
+      "expenseId": "sample-expense-4",
+      "version": 1
+    },
+    {
+      "userId": "vishanu",
+      "amountMinor": 11200,
+      "expenseId": "sample-expense-4",
+      "version": 1
+    },
+    {
+      "userId": "pujitha",
+      "amountMinor": 11200,
+      "expenseId": "sample-expense-4",
+      "version": 1
+    },
+    {
+      "userId": "vedavathi",
+      "amountMinor": 11200,
+      "expenseId": "sample-expense-4",
+      "version": 1
+    },
+    {
+      "userId": "sujay",
+      "amountMinor": 80000,
+      "expenseId": "sample-expense-5",
+      "version": 1
+    },
+    {
+      "userId": "niyanth",
+      "amountMinor": 80000,
+      "expenseId": "sample-expense-5",
+      "version": 1
+    },
+    {
+      "userId": "vishanu",
+      "amountMinor": 80000,
+      "expenseId": "sample-expense-5",
+      "version": 1
+    },
+    {
+      "userId": "pujitha",
+      "amountMinor": 80000,
+      "expenseId": "sample-expense-5",
+      "version": 1
+    },
+    {
+      "userId": "vedavathi",
+      "amountMinor": 80000,
+      "expenseId": "sample-expense-5",
+      "version": 1
+    }
+  ],
+  "settlements": [],
+  "flights": [],
+  "documents": [
+    {
+      "id": "sample-doc-0",
+      "title": "Pack a universal adapter",
+      "kind": "checklist",
+      "category": "Packing",
+      "notes": "A small thing that makes a big difference.",
+      "ownerId": "sujay",
+      "sharedWith": [
+        "sujay",
+        "niyanth",
+        "vishanu",
+        "pujitha",
+        "vedavathi"
+      ],
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z",
+      "checked": false,
+      "date": ""
+    },
+    {
+      "id": "sample-doc-1",
+      "title": "An evening in Hoi An",
+      "kind": "activity",
+      "category": "Places to visit",
+      "notes": "Walk the lantern-lit streets and find a spot by the river.",
+      "ownerId": "sujay",
+      "sharedWith": [
+        "sujay",
+        "niyanth",
+        "vishanu",
+        "pujitha",
+        "vedavathi"
+      ],
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z",
+      "checked": false,
+      "date": "2026-11-16"
+    },
+    {
+      "id": "sample-doc-2",
+      "title": "Save your travel insurance",
+      "kind": "checklist",
+      "category": "Insurance",
+      "notes": "Add your policy to the vault before departure.",
+      "ownerId": "sujay",
+      "sharedWith": [
+        "sujay",
+        "niyanth",
+        "vishanu",
+        "pujitha",
+        "vedavathi"
+      ],
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z",
+      "checked": false,
+      "date": ""
+    }
+  ],
+  "notifications": [
+    {
+      "id": "sample-event-0",
+      "actorId": "sujay",
+      "action": "Added an expense",
+      "entityId": "sample-expense-0",
+      "createdAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "id": "sample-event-1",
+      "actorId": "niyanth",
+      "action": "Added an expense",
+      "entityId": "sample-expense-1",
+      "createdAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "id": "sample-event-2",
+      "actorId": "vishanu",
+      "action": "Added an expense",
+      "entityId": "sample-expense-2",
+      "createdAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "id": "sample-event-3",
+      "actorId": "pujitha",
+      "action": "Added an expense",
+      "entityId": "sample-expense-3",
+      "createdAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "id": "sample-event-4",
+      "actorId": "vedavathi",
+      "action": "Added an expense",
+      "entityId": "sample-expense-4",
+      "createdAt": "2026-10-15T16:00:27.973Z"
+    },
+    {
+      "id": "sample-event-5",
+      "actorId": "sujay",
+      "action": "Added an expense",
+      "entityId": "sample-expense-5",
+      "createdAt": "2026-10-15T16:00:27.973Z"
+    }
+  ],
+  "settings": {
+    "id": "trip",
+    "name": "Vietnam, together.",
+    "startDate": "2026-11-12",
+    "endDate": "2026-11-22",
+    "budgetMinor": 15000000,
+    "rates": {
+      "INR": "1",
+      "VND": "0.0033",
+      "USD": "84",
+      "EUR": "92",
+      "GBP": "110",
+      "SGD": "64",
+      "THB": "2.5",
+      "JPY": "0.56"
+    },
+    "version": 1
+  },
+  "description": "Illustrative sample data only. Not real expenses, bookings, dates, or exchange rates."
+}

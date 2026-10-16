@@ -1,0 +1,20 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const vm=require('node:vm');const fs=require('node:fs');const path=require('node:path');const crypto=require('node:crypto');
+test('live bridge pins origin/window/channel and keeps codes and session tokens out of URLs',async()=>{
+ let listener,frame;const messages=[];const origin='https://example-script.googleusercontent.com';
+ const context={crypto:crypto.webcrypto,Map,Array,Promise,Error,Uint8Array,setTimeout:(fn,ms)=>{const t=setTimeout(fn,ms);t.unref();return t;},clearTimeout,URL,console,window:{TRIP_CONFIG:{appsScriptUrl:'https://script.google.com/macros/s/TEST/exec'},addEventListener:(type,cb)=>listener=cb},document:{createElement:()=>({remove(){}}),body:{append:f=>frame=f}}};
+ vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../api.js'),'utf8'),context);
+ const api=context.window.TripAPI,code='a'.repeat(64),token='b'.repeat(64);
+ const source={postMessage(message,target){messages.push({message,target});}};
+ const login=api.login('sujay',code);assert.ok(frame.src.startsWith('https://script.google.com/macros/s/TEST/exec?channel='));assert.equal(frame.src.includes(code),false);const channel=new URL(frame.src).searchParams.get('channel');assert.match(channel,/^[a-f0-9]{64}$/);
+ listener({origin:'https://attacker.example',source,data:{type:'trip:ready',channel}});listener({origin,source,data:{type:'trip:ready',channel:'wrong'}});await Promise.resolve();assert.equal(messages.length,0);
+ listener({origin,source,data:{type:'trip:ready',channel}});await new Promise(resolve=>setImmediate(resolve));assert.equal(messages.length,1);assert.equal(messages[0].target,origin);assert.equal(messages[0].message.request.payload.code,code);
+ let settled=false;login.then(()=>settled=true);const id=messages[0].message.id,response={ok:true,result:{token,data:{me:{id:'sujay'}}}};
+ listener({origin:'https://attacker.example',source,data:{type:'trip:response',channel,id,response}});listener({origin,source:{},data:{type:'trip:response',channel,id,response}});listener({origin,source,data:{type:'trip:response',channel:'wrong',id,response}});await Promise.resolve();assert.equal(settled,false);
+ listener({origin,source,data:{type:'trip:response',channel,id,response}});assert.equal((await login).me.id,'sujay');
+ const load=api.call('load');await new Promise(resolve=>setImmediate(resolve));assert.equal(messages[1].message.request.token,token);assert.equal(frame.src.includes(token),false);const nextId=messages[1].message.id;listener({origin,source,data:{type:'trip:response',channel,id:nextId,response:{ok:true,result:{expenses:[]}}}});assert.deepEqual(JSON.parse(JSON.stringify(await load)),{expenses:[]});
+ const logout=api.logout();await new Promise(resolve=>setImmediate(resolve));const logoutId=messages[2].message.id;listener({origin,source,data:{type:'trip:response',channel,id:logoutId,response:{ok:true,result:{}}}});await logout;
+});
+test('bridge server script ignores mismatched parent origins and untrusted source windows',()=>{
+ const html=fs.readFileSync(path.join(__dirname,'../backend/Bridge.html'),'utf8');let source=html.match(/<script>([\s\S]*)<\/script>/)[1].replace('<?!= origin ?>',JSON.stringify('https://owner.github.io')).replace('<?!= channel ?>',JSON.stringify('a'.repeat(64)));let listener,calls=0;const top={postMessage(){}};const runner={withSuccessHandler(){return this;},withFailureHandler(){return this;},rpc(){calls++;}};const context={window:{top,addEventListener:(_,cb)=>listener=cb},google:{script:{run:runner}}};vm.createContext(context);vm.runInContext(source,context);const data={type:'trip:request',channel:'a'.repeat(64),id:'request',request:{action:'load'}};
+ listener({origin:'https://attacker.example',source:top,data});listener({origin:'https://owner.github.io',source:{},data});listener({origin:'https://owner.github.io',source:top,data:{...data,channel:'wrong'}});assert.equal(calls,0);listener({origin:'https://owner.github.io',source:top,data});assert.equal(calls,1);
+});
