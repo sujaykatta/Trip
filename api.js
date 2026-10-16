@@ -3,12 +3,12 @@ window.TripAPI = (() => {
   let token = '', bridge = null, ready = null, source = null, origin = '', mode = 'live', demo = null, demoUser = '';
   const pending = new Map();
   const random = () => Array.from(crypto.getRandomValues(new Uint8Array(32)), n=>n.toString(16).padStart(2,'0')).join('');
-  const channel = random();
-  let resolveReady, rejectReady;
+  let channel = random();
+  let resolveReady;
   window.addEventListener('message', event => {
     if (!/^https:\/\/(?:[a-z0-9-]+-script|script)\.googleusercontent\.com$/.test(event.origin)) return;
     if (!event.data || event.data.channel !== channel) return;
-    if (event.data.type === 'trip:ready' && !source) { source=event.source;origin=event.origin;resolveReady?.(); }
+    if (event.data.type === 'trip:ready' && resolveReady && !source) { source=event.source;origin=event.origin;resolveReady?.(); }
     if (event.data.type === 'trip:response' && event.source===source && event.origin===origin) {
       const job=pending.get(event.data.id);if (!job) return;clearTimeout(job.timer);pending.delete(event.data.id);
       if (event.data.response.ok) job.resolve(event.data.response.result); else job.reject(new Error(event.data.response.error));
@@ -18,8 +18,27 @@ window.TripAPI = (() => {
     if(ready) return ready;
     const url=window.TRIP_CONFIG.appsScriptUrl;
     if(!/^https:\/\/script\.google\.com\/macros\/s\/[a-zA-Z0-9_-]+\/exec$/.test(url)) return Promise.reject(new Error('Connect Google Sheets first. See the setup guide, or explore the sample trip.'));
-    ready=new Promise((resolve,reject)=>{resolveReady=resolve;rejectReady=reject;const timer=setTimeout(()=>{ready=null;bridge?.remove();source=null;reject(new Error('Google connection timed out. Check deployment access and FRONTEND_ORIGIN.'));},25000);resolveReady=()=>{clearTimeout(timer);resolve();};});
-    bridge=document.createElement('iframe');bridge.hidden=true;bridge.title='Secure trip connection';bridge.src=url+'?channel='+channel;document.body.append(bridge);return ready;
+    ready=new Promise((resolve,reject)=>{
+      let attempt=0,timer;
+      const fail=()=>{
+        clearTimeout(timer);bridge?.remove();bridge=null;source=null;origin='';resolveReady=null;
+        if(attempt<2){start();return;}
+        ready=null;
+        reject(new Error('Could not reach Google after two connection attempts. Check your internet connection and try Sign in again. If this keeps happening, try another browser or ask Sujay to check the Google deployment.'));
+      };
+      const start=()=>{
+        attempt++;channel=random();
+        const frame=document.createElement('iframe');
+        bridge=frame;frame.hidden=true;frame.title='Secure trip connection';
+        resolveReady=()=>{clearTimeout(timer);frame.onerror=null;resolveReady=null;resolve();};
+        frame.onerror=()=>{if(bridge===frame)fail();};
+        frame.src=url+'?channel='+channel;
+        timer=setTimeout(fail,30000);
+        document.body.append(frame);
+      };
+      start();
+    });
+    return ready;
   }
   async function live(action,payload={},requestId) {
     await connect(); const id=random();

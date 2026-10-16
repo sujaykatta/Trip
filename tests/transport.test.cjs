@@ -28,3 +28,25 @@ test('password login and change send only stretched proofs through the pinned br
  const change=api.changePassword('test-user',password,next,next,'request-id-123456789012345');await wait(3);reply(2,{salt});await wait(4);const payload=messages[3].message.request.payload;assert.equal(messages[3].message.request.action,'changePassword');assert.equal(payload.newCode,await P.proof('test-user',next,payload.salt,context.window.TRIP_CONFIG.appsScriptUrl));assert.equal(payload.currentCode,messages[1].message.request.payload.code);assert.equal(JSON.stringify(messages).includes(password),false);assert.equal(JSON.stringify(messages).includes(next),false);reply(3,{passwordChanged:true});await change;
  const load=api.call('load');await wait(5);assert.equal(messages[4].message.request.token,'');reply(4,{});await load;
 });
+test('connection retries with a fresh channel, ignores the old frame and can recover after both attempts time out',async()=>{
+ let listener;const frames=[],timers=new Map(),messages=[];let nextTimer=0;
+ const context={crypto:crypto.webcrypto,Map,Array,Promise,Error,Uint8Array,URL,console,
+ setTimeout:(fn,ms)=>{const id=++nextTimer;timers.set(id,{fn,ms});return id;},clearTimeout:id=>timers.delete(id),
+ TripPasswords:{isAccessCode:v=>/^[a-f0-9]{64}$/.test(v)},
+ window:{TRIP_CONFIG:{appsScriptUrl:'https://script.google.com/macros/s/TEST/exec'},addEventListener:(_,cb)=>listener=cb},
+ document:{createElement:()=>({remove(){this.removed=true;}}),body:{append:frame=>frames.push(frame)}}};
+ vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../api.js'),'utf8'),context);
+ const api=context.window.TripAPI,source={postMessage:message=>messages.push(message)},origin='https://example-script.googleusercontent.com';
+ const expire=()=>{const entry=[...timers].find(([,t])=>t.ms===30000);assert.ok(entry);timers.delete(entry[0]);entry[1].fn();};
+ const ready=frame=>listener({origin,source,data:{type:'trip:ready',channel:new URL(frame.src).searchParams.get('channel')}});
+ const first=api.login('niyanth','a'.repeat(64));const rejected=assert.rejects(first,/two connection attempts/);
+ expire();assert.equal(frames.length,2);assert.equal(frames[0].removed,true);assert.notEqual(frames[0].src,frames[1].src);
+ ready(frames[0]);await Promise.resolve();assert.equal(messages.length,0);
+ expire();await rejected;assert.equal(frames[1].removed,true);assert.equal(messages.length,0);
+ ready(frames[1]);
+ const second=api.login('niyanth','a'.repeat(64));assert.equal(frames.length,3);
+ ready(frames[1]);await Promise.resolve();assert.equal(messages.length,0);
+ ready(frames[2]);await new Promise(resolve=>setImmediate(resolve));assert.equal(messages.length,1);
+ listener({origin,source,data:{type:'trip:response',channel:new URL(frames[2].src).searchParams.get('channel'),id:messages[0].id,response:{ok:true,result:{token:'b'.repeat(64),data:{me:{id:'niyanth'}}}}}});
+ assert.equal((await second).me.id,'niyanth');assert.equal(timers.size,0);
+});

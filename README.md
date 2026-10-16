@@ -262,3 +262,7 @@ Flights from recognized VietJet Air and Vietnam Airlines bookings include an off
 ### Trip overview on Home
 
 Home prioritizes the journey: the next flight, other recorded flight legs, a selectable daily itinerary preview, confirmed stays and hotel options, saved documents, and the crew. Travel shortcuts open the matching date or hotel list. The spending summary, recent expenses and budget sit together at the bottom. All cards use the signed-in user’s current trip snapshot.
+
+### Google connection timeouts
+
+Sign-in allows two 30-second attempts to establish the Google bridge, using a fresh channel for the retry. Credentials are sent only after the trusted bridge responds. A connection timeout happens before password verification and does not mean the password is incorrect. Retry sign-in; if the error persists, check connectivity/browser restrictions and ask the organizer to verify anonymous deployment access and the exact frontend origin.
