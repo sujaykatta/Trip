@@ -15,8 +15,10 @@ Live backend connection verified on 16 October 2026 after the organizer complete
 
 Live Sujay sign-in was also verified in the in-app browser on 16 October 2026 after reloading the current backend configuration. The dashboard displayed the private trip with its actual empty expense history. Configuration loading now includes a version query to avoid reusing an old config response.
 
-**Not yet verified:** real file uploads and per-member Drive access in your account, GitHub Pages hosting, or Safari/iPhone behavior. Continue the acceptance checks in TESTING.md. No real trip expenses or private documents were uploaded during verification.
+**Not yet verified:** real file uploads and per-member Drive access in your account, Safari/iPhone behavior. Continue the acceptance checks in TESTING.md. No real trip expenses or private documents were uploaded during verification.
 
 Admin update: all five traveler reports, filtered CSV exports, per-traveler paid/share balances and member access rejection were checked. Admin layouts were tested at 320 px and 390 px. The backend role is rechecked on each adminReport request, including after role revocation. Apps Script deployment Version 2 was published on 16 October 2026 using the existing /exec URL.
 
 Live admin acceptance completed: Sujay signed into the updated frontend against deployment Version 2, opened Admin, loaded all five member summaries from the protected report endpoint, and selected Niyanth’s individual report. No real expenses, repayments or private files were added during this check.
+
+GitHub Pages production deployment verified on 16 October 2026 at https://sujaykatta.github.io/Trip/. The deployment workflow passed all 45 automated tests and 14 browser acceptance scenarios. HTTPS is enforced. The backend FRONTEND_ORIGIN is set to https://sujaykatta.github.io; live Sujay sign-in and the protected individual admin reports were verified from the hosted site.
