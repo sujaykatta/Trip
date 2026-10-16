@@ -250,3 +250,11 @@ Hotel shortlisting supports pasted HTTPS URLs and shared messages via **Add hote
 After signing in, open **My account / Profile → Change password**. Enter the current password or original access code, then a matching new password of 12–128 characters. A successful change signs out every session for that user and replaces the original access code. The organizer can still recover an account using the existing access-code rotation helper.
 
 The browser uses Web Crypto PBKDF2-HMAC-SHA256 (600,000 iterations) with a fresh random salt, account ID and deployment URL before sending a verifier through the pinned bridge. The server stores only a peppered hash of that verifier plus the public salt, never password text. The same stable Apps Script deployment URL must be retained. This work factor follows the [OWASP password storage guidance](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2). Backend Version 3 supports the password protocol without changing the Sheet schema.
+
+### Image scanning and day navigation
+
+Itinerary now has **Day by day** and **Hotels** tabs. Use the horizontal numbered days or range slider to select a date. Daily pages show a compact summary of hotels for that date; use **View hotels** to open the filtered full shortlist.
+
+New expense, flight, hotel and vault forms accept PNG/JPEG/WebP images for on-device text recognition. Receipt or vault image uploads also trigger scanning. Detected fields are highlighted for review; manually edited fields are preserved, and scanning never saves a record automatically. Scanning alone does not attach an image; use the receipt/ticket/vault attachment controls to keep a file. OCR can misread text and leaves unsupported fields for manual entry. English OCR is currently bundled locally. The first scan loads a model and worker from this site, without sending the image to a third-party recognition service. Runtime/model licenses and reproduction instructions are in assets/ocr/NOTICE.md.
+
+Flights from recognized VietJet Air and Vietnam Airlines bookings include an official manage-booking link and Copy PNR. The portal opens without sending the booking reference in its URL; enter the copied reference and passenger details on the airline site. Portal destinations were checked against the official airline pages on 16 October 2026.
