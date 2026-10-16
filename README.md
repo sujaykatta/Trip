@@ -236,3 +236,9 @@ VERIFICATION.md                     Completed checks and deployment boundaries
 - [Bundled Vietnam photograph on Unsplash](https://images.unsplash.com/photo-1528127269322-539801943592) — decorative destination imagery, not evidence of a group booking. [Unsplash license](https://unsplash.com/license).
 - [Manrope](https://github.com/sharanda/manrope), licensed under SIL Open Font License; license included in `assets/FONT-LICENSE.txt`. System fonts provide a fallback for additional currency glyphs.
 - The design is independently created and inspired by translucent glass interfaces; it is not an Apple product.
+
+### Day-by-day planning
+
+The Itinerary page builds a day selector from trip dates and shared flights. Add timed plans and hotel links, keep hotels shortlisted until booked, then mark a stay confirmed to place check-in and check-out on their respective dates. These plans are stored privately in the existing Google Sheets Documents table and shared with the five travelers; no schema change or Apps Script redeployment is required. Each owner can edit their entries. Confirming a stay never creates an expense automatically.
+
+Members can use **I have paid Sujay** under Expenses to record a repayment. It remains pending until Sujay confirms receipt in **Expenses → Settle up**. The app records repayments only; it does not transfer money.

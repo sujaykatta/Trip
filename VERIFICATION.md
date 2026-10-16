@@ -22,3 +22,5 @@ Admin update: all five traveler reports, filtered CSV exports, per-traveler paid
 Live admin acceptance completed: Sujay signed into the updated frontend against deployment Version 2, opened Admin, loaded all five member summaries from the protected report endpoint, and selected Niyanth’s individual report. No real expenses, repayments or private files were added during this check.
 
 GitHub Pages production deployment verified on 16 October 2026 at https://sujaykatta.github.io/Trip/. The deployment workflow passed all 45 automated tests and 14 browser acceptance scenarios. HTTPS is enforced. The backend FRONTEND_ORIGIN is set to https://sujaykatta.github.io; live Sujay sign-in and the protected individual admin reports were verified from the hosted site.
+
+Itinerary update: all 45 unit/backend tests and 16 browser scenarios passed. Added checks cover hotel shortlist/confirmation, separate check-in/check-out day timelines, invalid plan times, persistence after reload, and 320 px itinerary layout. Private ticket details and expense amounts are stored in Google Sheets, never bundled into the public frontend.
