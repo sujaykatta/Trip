@@ -258,3 +258,7 @@ Itinerary now has **Day by day** and **Hotels** tabs. Use the horizontal numbere
 New expense, flight, hotel and vault forms accept PNG/JPEG/WebP images for on-device text recognition. Receipt or vault image uploads also trigger scanning. Detected fields are highlighted for review; manually edited fields are preserved, and scanning never saves a record automatically. Scanning alone does not attach an image; use the receipt/ticket/vault attachment controls to keep a file. OCR can misread text and leaves unsupported fields for manual entry. English OCR is currently bundled locally. The first scan loads a model and worker from this site, without sending the image to a third-party recognition service. Runtime/model licenses and reproduction instructions are in assets/ocr/NOTICE.md.
 
 Flights from recognized VietJet Air and Vietnam Airlines bookings include an official manage-booking link and Copy PNR. The portal opens without sending the booking reference in its URL; enter the copied reference and passenger details on the airline site. Portal destinations were checked against the official airline pages on 16 October 2026.
+
+### Trip overview on Home
+
+Home prioritizes the journey: the next flight, other recorded flight legs, a selectable daily itinerary preview, confirmed stays and hotel options, saved documents, and the crew. Travel shortcuts open the matching date or hotel list. The spending summary, recent expenses and budget sit together at the bottom. All cards use the signed-in user’s current trip snapshot.
