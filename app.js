@@ -75,7 +75,7 @@ async function act(el){const action=el.dataset.action,id=el.dataset.id;if(busy &
   if(action==='add-plan'||action==='add-hotel'||action==='edit-plan')return planForm(id,action==='add-hotel');
   if(action==='previous-day'||action==='next-day'){const days=tripDates();itineraryDate=days[days.indexOf(itineraryDate)+(action==='next-day'?1:-1)]||itineraryDate;render();return;}
   if(action==='close')return closeModal();
-  if(action==='theme'){const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;localStorage.setItem('vietnam-theme',theme);render();return;}
+  if(action==='theme'){const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;localStorage.setItem('vietnam-theme-v2',theme);render();return;}
   if(action==='login')return loginModal(id);
   if(action==='preview'||action==='switch-preview'){resetAdminReport();data=await TripAPI.startPreview(id||'sujay');page='home';render();toast('Sample trip · Changes are saved only in this browser.');return;}
   if(action==='add-expense'||action==='edit-expense')return expenseForm(id);
@@ -136,7 +136,7 @@ document.addEventListener('submit',async event=>{event.preventDefault();const fo
   }catch(error){formError(error.message);}finally{busy=false;submit.disabled=false;submit.innerHTML=oldText;}
 });
 $('#modal').addEventListener('cancel',event=>{if(busy)event.preventDefault();else cancelImageScan();});
-try{document.documentElement.dataset.theme=localStorage.getItem('vietnam-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch{document.documentElement.dataset.theme='light';}
+try{document.documentElement.dataset.theme=localStorage.getItem('vietnam-theme-v2')==='dark'?'dark':'light';}catch{document.documentElement.dataset.theme='light';}
 welcome();
 
 window.addEventListener('resize',()=>{if(page==='itinerary')alignSelectedDay();if(page==='home')alignHomeDay();});

@@ -3,7 +3,7 @@ const {chromium,expect}=require('@playwright/test');const fs=require('node:fs');
 (async()=>{const browser=await chromium.launch({channel:process.env.PLAYWRIGHT_CHANNEL||'chrome',headless:true});const context=await browser.newContext({viewport:{width:1440,height:1050},acceptDownloads:true});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});const check=async(name,fn)=>{await fn();console.log('PASS '+name);};
 try{
  await page.route('**/config.js*',route=>route.fulfill({contentType:'application/javascript',body:"window.TRIP_CONFIG={appsScriptUrl:'',allowPreview:true};"}));
- await page.goto(process.env.TRIP_TEST_URL||'http://localhost:4173');await page.evaluate(()=>{localStorage.setItem('vietnam-theme','light');document.documentElement.dataset.theme='light';});
+ await page.goto(process.env.TRIP_TEST_URL||'http://localhost:4173');await page.evaluate(()=>{localStorage.setItem('vietnam-theme-v2','light');document.documentElement.dataset.theme='light';});
  await check('welcome screen requires a code, not only a selected name',async()=>{await page.locator('[data-action=login][data-id=sujay]').click();await expect(page.locator('#login-form input[name=code]')).toBeVisible();await expect(page.locator('#login-form')).toContainText('not connected');await page.locator('#modal [data-action=close]').first().click();await expect(page.locator('.welcome')).toBeVisible();});
  await page.screenshot({path:'tests/welcome-desktop.png',fullPage:true,animations:'disabled'});
  await page.getByRole('button',{name:'Take a look around'}).click();await page.locator('.trip-hero').waitFor();await page.locator('#toasts').evaluate(e=>e.replaceChildren());
