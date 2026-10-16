@@ -66,6 +66,10 @@ function session_(token, db) {
   var user = db.Users.find(u=>u.id === s.userId && u.status === 'active');
   TripCore.assert(user, 'Account is unavailable.'); return user;
 }
+function matchesCode_(user, code) {
+  var parts=String(user.codeHash).split('$');
+  return equal_(hashCode_(code),parts[0]==='p1'?parts[2]:user.codeHash);
+}
 function login_(payload, db) {
   var id = TripCore.text(payload.userId, 40); var key = 'ATTEMPT_' + (TripCore.MEMBERS.some(u => u.id === id) ? id : 'unknown');
   var attempts = JSON.parse(props_().getProperty(key) || '{"count":0,"until":0}');
@@ -73,7 +77,7 @@ function login_(payload, db) {
   TripCore.assert(attempts.count < 10, 'Too many attempts. Try again in 15 minutes.');
   var user = db.Users.find(u=>u.id === id && u.status === 'active');
   var code = String(payload.code || '').trim();
-  if (!user || code.length !== 64 || !equal_(hashCode_(code), user.codeHash)) { attempts.count++; props_().setProperty(key, JSON.stringify(attempts)); throw new Error('The account or access code is incorrect.'); }
+  if (!user || code.length !== 64 || !matchesCode_(user, code)) { attempts.count++; props_().setProperty(key, JSON.stringify(attempts)); throw new Error('The account or access code is incorrect.'); }
   props_().deleteProperty(key);
   var all = props_().getProperties(); var sessions = [];
   Object.keys(all).filter(k=>k.startsWith('SESSION_')).forEach(k => { var s=JSON.parse(all[k]); if(s.expires < Date.now()) props_().deleteProperty(k); else if(s.userId === id) sessions.push({key:k, expires:s.expires}); });
@@ -125,6 +129,11 @@ function rpc(request) {
     TripCore.assert(request && typeof request === 'object', 'Invalid request.');
     TripCore.assert(lock.tryLock(20000), 'The trip is busy. Please try again.');
     var db=db_(), p=request.payload || {}, action=request.action;
+    if(action==='authInfo') {
+      var candidate=db.Users.find(u=>u.id===p.userId && u.status==='active');
+      var pieces=String(candidate ? candidate.codeHash : '').split('$');
+      return {ok:true,result:{salt:pieces[0]==='p1'?pieces[1]:''}};
+    }
     if(action==='login') return {ok:true,result:login_(p,db)};
     var user=session_(request.token,db);
     if(action==='load') return {ok:true,result:snapshot_(db,user)};
@@ -141,6 +150,26 @@ function rpc(request) {
       return {ok:true,result:{base64:Utilities.base64Encode(blob.getBytes()),mimeType:doc.mimeType,filename:doc.filename}};
     }
     TripCore.assert(typeof request.requestId==='string' && /^[a-zA-Z0-9-]{20,80}$/.test(request.requestId),'A unique request ID is required.');
+    if(action==='changePassword') {
+      var attemptKey='PASSWORD_ATTEMPT_'+user.id;
+      var tries=JSON.parse(props_().getProperty(attemptKey)||'{"count":0,"until":0}');
+      if(tries.until<Date.now()) tries={count:0,until:Date.now()+15*60000};
+      TripCore.assert(tries.count<10,'Too many attempts. Try again in 15 minutes.');
+      if(typeof p.currentCode!=='string' || !/^[a-f0-9]{64}$/.test(p.currentCode) || !matchesCode_(user,p.currentCode)) {
+        tries.count++;props_().setProperty(attemptKey,JSON.stringify(tries));throw new Error('Your current password or access code is incorrect.');
+      }
+      TripCore.assert(typeof p.newCode==='string' && /^[a-f0-9]{64}$/.test(p.newCode) && typeof p.salt==='string' && /^[a-f0-9]{64}$/.test(p.salt),'Invalid password update.');
+      TripCore.assert(p.newCode!==p.currentCode,'Choose a different password.');
+      var changed=Object.assign({},user,{codeHash:'p1$'+p.salt+'$'+hashCode_(p.newCode),updatedAt:now_()});
+      write_(db,'Users',changed);
+      // Password material is deliberately excluded from the audit request and records.
+      audit_(db,user,'Changed password',user.id,{},null,null,[user.id]);
+      commitStarted=true;commit_(db);
+      var sessions=props_().getProperties();
+      Object.keys(sessions).filter(k=>k.startsWith('SESSION_')).forEach(k=>{if(JSON.parse(sessions[k]).userId===user.id)props_().deleteProperty(k);});
+      props_().deleteProperty(attemptKey);props_().deleteProperty('ATTEMPT_'+user.id);
+      return {ok:true,result:{passwordChanged:true}};
+    }
     var previous=db.AuditLog.find(a=>a.actorId===user.id && a.requestId===request.requestId);
     if(previous) { TripCore.assert(previous.requestHash===digest_(JSON.stringify({action:request.action,payload:request.payload})), 'This request ID was already used for different data.'); return {ok:true,result:Object.assign(snapshot_(db,user), {savedId:previous.entityId})}; }
     var old=null, record=null, table='', label='', audience=null;

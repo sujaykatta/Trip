@@ -244,3 +244,9 @@ The Itinerary page builds a day selector from trip dates and shared flights. Add
 Members can use **I have paid Sujay** under Expenses to record a repayment. It remains pending until Sujay confirms receipt in **Expenses → Settle up**. The app records repayments only; it does not transfer money.
 
 Hotel shortlisting supports pasted HTTPS URLs and shared messages via **Add hotel from link**. Full property URLs can supply the name, city, proposed dates and party size; short links can be opened to review the property. Selecting a supported city suggests a stay from the existing arrival and onward flights, including a warning when a flight is pending. Saved shortlist dates remain potential until the booking is explicitly confirmed.
+
+### Personal passwords
+
+After signing in, open **My account / Profile → Change password**. Enter the current password or original access code, then a matching new password of 12–128 characters. A successful change signs out every session for that user and replaces the original access code. The organizer can still recover an account using the existing access-code rotation helper.
+
+The browser uses Web Crypto PBKDF2-HMAC-SHA256 (600,000 iterations) with a fresh random salt, account ID and deployment URL before sending a verifier through the pinned bridge. The server stores only a peppered hash of that verifier plus the public salt, never password text. The same stable Apps Script deployment URL must be retained. This work factor follows the [OWASP password storage guidance](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2). Backend Version 3 supports the password protocol without changing the Sheet schema.

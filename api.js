@@ -25,6 +25,13 @@ window.TripAPI = (() => {
     await connect(); const id=random();
     return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('The request timed out. Retry with the same form to avoid a duplicate.'));},65000);pending.set(id,{resolve,reject,timer});source.postMessage({type:'trip:request',channel,id,request:{action,payload,token,requestId}},origin);});
   }
+  async function credential(userId,value) {
+    value=String(value||'').trim();
+    if(TripPasswords.isAccessCode(value))return value;
+    TripCore.assert(value.length>0 && value.length<=128,'Enter your password or original access code.');
+    const info=await live('authInfo',{userId});
+    return TripPasswords.proof(userId,value,info.salt,window.TRIP_CONFIG.appsScriptUrl);
+  }
   function storage(action,value) {
     return new Promise((resolve,reject)=>{const open=indexedDB.open('vietnam-together-preview',1);open.onupgradeneeded=()=>open.result.createObjectStore('data');open.onerror=()=>reject(new Error('Preview storage is unavailable. Enable browser storage.'));open.onsuccess=()=>{const db=open.result,tx=db.transaction('data',action==='read'?'readonly':'readwrite'),store=tx.objectStore('data');let req=action==='read'?store.get('trip'):store.put(value,'trip');tx.oncomplete=()=>{resolve(req.result);db.close();};tx.onerror=()=>{reject(new Error('Preview storage is full. Remove some attachments or reset the sample trip.'));db.close();};};});
   }
@@ -71,7 +78,15 @@ window.TripAPI = (() => {
     } catch(error){demo=before;throw error;}
   }
   return {
-    async login(userId,code){mode='live';const r=await live('login',{userId,code});token=r.token;return r.data;},
+    async login(userId,code){mode='live';const r=await live('login',{userId,code:TripPasswords.isAccessCode(String(code).trim())?String(code).trim():await credential(userId,code)});token=r.token;return r.data;},
+    async changePassword(userId,currentPassword,newPassword,confirmation,requestId){
+      TripCore.assert(mode==='live','Password changes are available in your private account.');
+      TripPasswords.validate(newPassword,confirmation);
+      TripCore.assert(currentPassword!==newPassword,'Choose a different password.');
+      const currentCode=await credential(userId,currentPassword),salt=random();
+      const newCode=await TripPasswords.proof(userId,newPassword,salt,window.TRIP_CONFIG.appsScriptUrl);
+      const result=await live('changePassword',{currentCode,newCode,salt},requestId);token='';return result;
+    },
     async startPreview(userId='sujay'){mode='preview';demoUser=userId;demo=await storage('read') || seed();await storage('write',demo);return snapshot();},
     async resetPreview(){demo=seed();await storage('write',demo);return snapshot();},
     async call(action,payload={},requestId){return mode==='preview'?preview(action,payload,requestId || crypto.randomUUID()):live(action,payload,requestId);},

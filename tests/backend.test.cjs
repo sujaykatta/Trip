@@ -55,3 +55,19 @@ test('admin report respects private document access and rechecks admin role on e
  const r=f.request(admin,'adminReport');assert.equal(r.ok,true,r.error);assert.equal(r.result.documents.length,0);
  const role=f.context.SCHEMA_.Users.indexOf('role'),id=f.context.SCHEMA_.Users.indexOf('id');f.tables.Users.find(row=>row[id]==='sujay')[role]='member';assert.equal(f.request(admin,'adminReport').ok,false);
 });
+test('password changes require current credential, affect only the signed-in user and revoke all their sessions',()=>{
+ const f=fixture(),owner=f.login('niyanth'),otherSession=f.login('niyanth'),admin=f.login('sujay'),salt='c'.repeat(64),next='d'.repeat(64);
+ assert.equal(f.request(owner,'changePassword',{currentCode:f.codes.sujay,newCode:next,salt}).ok,false);
+ assert.equal(f.request(owner,'changePassword',{currentCode:f.codes.niyanth,newCode:'weak',salt}).ok,false);
+ const r=f.request(owner,'changePassword',{currentCode:f.codes.niyanth,newCode:next,salt,userId:'sujay'});assert.equal(r.ok,true,r.error);
+ assert.equal(f.request(owner,'load').ok,false);assert.equal(f.request(otherSession,'load').ok,false);assert.equal(f.request(admin,'load').ok,true);
+ assert.equal(f.request('','login',{userId:'niyanth',code:f.codes.niyanth}).ok,false);assert.equal(f.request('','login',{userId:'niyanth',code:next}).ok,true);
+ assert.equal(f.request('','authInfo',{userId:'niyanth'}).result.salt,salt);
+ const audit=JSON.stringify(f.tables.AuditLog);assert.equal(audit.includes(next),false);assert.equal(audit.includes(f.codes.niyanth),false);
+});
+test('password change failure keeps old credentials and sessions; repeated wrong current credentials are throttled',()=>{
+ const f=fixture(),owner=f.login('pujitha'),payload={currentCode:f.codes.pujitha,newCode:'e'.repeat(64),salt:'f'.repeat(64)};f.failCommit=true;assert.equal(f.request(owner,'changePassword',payload).ok,false);f.failCommit=false;assert.equal(f.request(owner,'load').ok,true);assert.equal(f.request('','login',{userId:'pujitha',code:f.codes.pujitha}).ok,true);
+ for(let i=0;i<10;i++)assert.equal(f.request(owner,'changePassword',{...payload,currentCode:'0'.repeat(64)}).ok,false);
+ assert.match(f.request(owner,'changePassword',payload).error,/Too many/);
+ assert.equal(f.request('0'.repeat(64),'changePassword',payload).ok,false);
+});
