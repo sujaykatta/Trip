@@ -1,11 +1,11 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const vm=require('node:vm');const fs=require('node:fs');const path=require('node:path');const crypto=require('node:crypto');
 test('live bridge pins origin/window/channel and keeps codes and session tokens out of URLs',async()=>{
  let listener,frame;const messages=[];const origin='https://example-script.googleusercontent.com';
- const context={crypto:crypto.webcrypto,Map,Array,Promise,Error,Uint8Array,setTimeout:(fn,ms)=>{const t=setTimeout(fn,ms);t.unref();return t;},clearTimeout,URL,console,window:{TRIP_CONFIG:{appsScriptUrl:'https://script.google.com/macros/s/TEST/exec'},addEventListener:(type,cb)=>listener=cb},document:{createElement:()=>({remove(){}}),body:{append:f=>frame=f}}};
+ const context={crypto:crypto.webcrypto,Map,Array,Promise,Error,Uint8Array,setTimeout:(fn,ms)=>{const t=setTimeout(fn,ms);t.unref();return t;},clearTimeout,URL,console,window:{TRIP_CONFIG:{appsScriptUrl:'https://script.google.com/macros/s/TEST/exec'},addEventListener:(type,cb)=>listener=cb},document:{createElement:()=>({credentialless:false,remove(){}}),body:{append:f=>frame=f}}};
  context.TripPasswords={isAccessCode:v=>/^[a-f0-9]{64}$/.test(v)};vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../api.js'),'utf8'),context);
  const api=context.window.TripAPI,code='a'.repeat(64),token='b'.repeat(64);
  const source={postMessage(message,target){messages.push({message,target});}};
- const login=api.login('sujay',code);assert.ok(frame.src.startsWith('https://script.google.com/macros/s/TEST/exec?channel='));assert.equal(frame.src.includes(code),false);const channel=new URL(frame.src).searchParams.get('channel');assert.match(channel,/^[a-f0-9]{64}$/);
+ const login=api.login('sujay',code);assert.ok(frame.src.startsWith('https://script.google.com/macros/s/TEST/exec?channel='));assert.equal(frame.src.includes(code),false);assert.equal(frame.credentialless,true);const channel=new URL(frame.src).searchParams.get('channel');assert.match(channel,/^[a-f0-9]{64}$/);
  listener({origin:'https://attacker.example',source,data:{type:'trip:ready',channel}});listener({origin,source,data:{type:'trip:ready',channel:'wrong'}});await Promise.resolve();assert.equal(messages.length,0);
  listener({origin,source,data:{type:'trip:ready',channel}});await new Promise(resolve=>setImmediate(resolve));assert.equal(messages.length,1);assert.equal(messages[0].target,origin);assert.equal(messages[0].message.request.payload.code,code);
  let settled=false;login.then(()=>settled=true);const id=messages[0].message.id,response={ok:true,result:{token,data:{me:{id:'sujay'}}}};

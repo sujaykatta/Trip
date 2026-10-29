@@ -33,11 +33,14 @@ window.TripAPI = (() => {
         clearTimeout(timer);bridge?.remove();bridge=null;source=null;origin='';resolveReady=null;
         if(attempt<2){start();return;}
         ready=null;
-        reject(new Error('Could not reach Google after two connection attempts. Check your internet connection and try Sign in again. If this keeps happening, try another browser or ask Sujay to check the Google deployment.'));
+        reject(new Error('Could not reach Google after two connection attempts. Google may be choosing the wrong signed-in account. Open this site in a private/incognito window and try again. If it still fails, ask Sujay to check the deployment and allowed site address.'));
       };
       const start=()=>{
         attempt++;channel=random();
         const frame=document.createElement('iframe');
+        // Apps Script multi-login can redirect to a broken /u/N/ URL. In supported
+        // browsers, isolate this anonymous web app from signed-in Google cookies.
+        if ('credentialless' in frame) frame.credentialless=true;
         bridge=frame;frame.hidden=true;frame.title='Secure trip connection';
         resolveReady=()=>{clearTimeout(timer);frame.onerror=null;resolveReady=null;resolve();};
         frame.onerror=()=>{if(bridge===frame)fail();};

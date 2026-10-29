@@ -38,3 +38,5 @@ Connection recovery update: 61 automated tests passed, including a delayed Googl
 Light-default update: checked with a dark system color scheme and an older saved dark preference; initial render uses light. Explicitly selecting dark still persists after reload. New browser preference key applies the requested one-time default to returning users too.
 
 Name correction: the traveler display name is Vishnu. The legacy `vishanu` ID remains unchanged, preserving account sign-in, password derivation, flight passengers, expense allocations and file permissions. Frontend snapshots also correct older persisted member names for profile/admin reports.
+
+29 October 2026 — Google multi-account 404: supported browsers set `credentialless` on the Apps Script iframe before navigation, isolating the anonymous bridge from Google account cookies. Unsupported browsers retain the existing bridge and receive private-window guidance if it times out. All 61 automated tests passed, including origin/channel/source pinning with the isolated bridge and existing unsupported-property contexts. No backend or credential changes.
