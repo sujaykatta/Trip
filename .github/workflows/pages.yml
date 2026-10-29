@@ -33,7 +33,7 @@ jobs:
       - name: Package public frontend only
         run: |
           mkdir -p _site
-          cp index.html styles.css app.js api.js core.js config.js admin.js admin-page.js home-page.js scan-parser.js image-scan.js booking-links.js passwords.js hotel-links.js itinerary.js _site/
+          cp index.html styles.css app.js api.js core.js config.js admin.js admin-page.js home-page.js map-geography.js route-map.js map-page.js scan-parser.js image-scan.js booking-links.js passwords.js hotel-links.js itinerary.js _site/
           cp -R assets _site/assets
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3

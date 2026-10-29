@@ -109,6 +109,7 @@ window.TripAPI = (() => {
     } catch(error){demo=before;throw error;}
   }
   return {
+    prepareLogin(){return mode==='live'?connect().then(()=>true,()=>false):Promise.resolve(false);},
     async login(userId,code){mode='live';const r=await live('login',{userId,code:TripPasswords.isAccessCode(String(code).trim())?String(code).trim():await credential(userId,code)});token=r.token;return r.data;},
     async changePassword(userId,currentPassword,newPassword,confirmation,requestId){
       TripCore.assert(mode==='live','Password changes are available in your private account.');
