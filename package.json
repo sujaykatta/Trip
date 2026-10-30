@@ -12,6 +12,7 @@
   "devDependencies": {
     "@playwright/test": "^1.56.0",
     "@tesseract.js-data/eng": "1.0.0",
+    "leaflet": "^1.9.4",
     "tesseract.js": "7.0.0"
   }
 }
