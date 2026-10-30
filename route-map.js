@@ -3,7 +3,7 @@ var TripRouteMap = (()=>{
  const places=[
   {id:'SGN',name:'Ho Chi Minh City',lat:10.8188,lon:106.652,aliases:['ho chi minh','saigon','sgn'],dx:-14,dy:-20,anchor:'end'},
   {id:'PQC',name:'Phu Quoc',lat:10.169783,lon:103.99353,aliases:['phu quoc','pqc'],dx:-13,dy:28,anchor:'end'},
-  {id:'HAN',name:'Hanoi',lat:21.221201,lon:105.806999,aliases:['hanoi','ha noi','han'],dx:20,dy:-12,anchor:'start'},
+  {id:'HAN',name:'Hanoi',lat:21.221201,lon:105.806999,aliases:['hanoi','ha noi','han','ha long','halong','lan ha'],dx:20,dy:-12,anchor:'start'},
   {id:'DAD',name:'Da Nang',lat:16.0439,lon:108.198997,aliases:['da nang','danang','dad','hoi an'],dx:20,dy:-10,anchor:'start'},
   {id:'VTG',name:'Vũng Tàu',lat:10.375093,lon:107.096185,aliases:['vung tau','vtg'],dx:18,dy:30,anchor:'start'}
  ];
