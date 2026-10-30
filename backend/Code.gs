@@ -196,6 +196,10 @@ function rpc(request) {
       TripCore.assert(p.fromId===user.id && p.toId!==user.id && db.Users.some(u=>u.id===p.toId && u.status==='active'),'Only the sender can record a repayment.');
       var amount=TripCore.minor(p.amount,'INR');TripCore.assert(amount>0,'Enter a positive amount.');
       record=Object.assign(base_(null,user),{fromId:user.id,toId:p.toId,amountMinor:amount,date:TripCore.date(p.date),notes:TripCore.text(p.notes,1000,false),status:'pending'});table='Settlements';label='Recorded a repayment';
+    } else if(action==='recordReceivedSettlement') {
+      TripCore.assert(p.toId===user.id && p.fromId!==user.id && db.Users.some(u=>u.id===p.fromId && u.status==='active'),'Record only money received by your own account.');
+      var receivedAmount=TripCore.minor(p.amount,'INR');TripCore.assert(receivedAmount>0,'Enter a positive amount.');
+      record=Object.assign(base_(null,user),{fromId:p.fromId,toId:user.id,amountMinor:receivedAmount,date:TripCore.date(p.date),notes:TripCore.text(p.notes,1000,false),status:'confirmed'});table='Settlements';label='Recorded money received';
     } else if(action==='confirmSettlement' || action==='cancelSettlement') {
       old=db.Settlements.find(s=>s.id===p.id && s.status==='pending');TripCore.assert(old && old.version===p.version,'Repayment is unavailable or changed.');
       TripCore.assert(action==='confirmSettlement' ? old.toId===user.id : (old.fromId===user.id || old.toId===user.id),'You cannot change this repayment.');record=Object.assign({},old,{status:action==='confirmSettlement'?'confirmed':'cancelled',version:old.version+1,updatedAt:now_()});table='Settlements';label=action==='confirmSettlement'?'Confirmed a repayment':'Cancelled a repayment';
