@@ -69,7 +69,8 @@ async function act(el){const action=el.dataset.action,id=el.dataset.id;if(busy &
   if(action==='home-hotels'){itineraryTab='hotels';hotelDayFilter=id||'';return navigatePage('itinerary');}
   if(action==='home-add-plan'){itineraryDate=id||homeDate;return planForm();}
   if(action==='map-day'){mapDate=id;mapPlace='';render();requestAnimationFrame(alignMapDay);return;}
-  if(action==='map-place'){mapPlace=id;render();return;}
+  if(action==='map-place'){mapPlace=id;mapCityOpen=true;render();requestAnimationFrame(()=>$('.city-map-detail')?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
+  if(action==='map-back'){mapCityOpen=false;render();return;}
   if(action==='map-open-day'){itineraryDate=id;itineraryTab='days';return navigatePage('itinerary');}
   if(action==='map-hotels'){hotelDayFilter=id;itineraryTab='hotels';return navigatePage('itinerary');}
   if(action==='itinerary-tab'){itineraryTab=id;hotelDayFilter='';render();return;}
