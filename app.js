@@ -78,6 +78,7 @@ async function act(el){const action=el.dataset.action,id=el.dataset.id;if(busy &
   if(action==='all-hotels'){hotelDayFilter='';render();return;}
   if(action==='select-day'){itineraryDate=id;render();requestAnimationFrame(()=>{alignSelectedDay();$('#day-strip [aria-pressed="true"]')?.focus({preventScroll:true});});return;}
   if(action==='use-hotel-link')return applyHotelLink();
+  if(action==='hanoi-plan')return hanoiPlanForm(id);
   if(action==='add-plan'||action==='add-hotel'||action==='edit-plan')return planForm(id,action==='add-hotel');
   if(action==='previous-day'||action==='next-day'){const slides=[...tripDates(),ITINERARY_SUMMARY],current=slides.indexOf(itineraryDate),target=current+(action==='next-day'?1:-1);itineraryDate=slides[target]||itineraryDate;render();return;}
   if(action==='close')return closeModal();
