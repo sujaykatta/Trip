@@ -29,6 +29,7 @@ window.TripAPI = (() => {
   function normalizeError(error) {
     const text=String(error?.message||error||'');
     if(/session expired|sign in again/i.test(text)) { token=''; const e=new Error('Your session ended. Please sign in again.'); e.sessionExpired=true; return e; }
+    if(/account or access code is incorrect/i.test(text)) return new Error('The account, password or access code is incorrect.');
     if(/^unknown operation\.?$/i.test(text)) return new Error('This action needs the latest backend version. Ask Sujay to redeploy the Apps Script, then try again.');
     return error instanceof Error ? error : new Error(text||'Something went wrong.');
   }
@@ -132,7 +133,7 @@ window.TripAPI = (() => {
   }
   return {
     prepareLogin(){return mode==='live'?connect().then(()=>true,()=>false):Promise.resolve(false);},
-    async login(userId,code){mode='live';const r=await live('login',{userId,code:TripPasswords.isAccessCode(String(code).trim())?String(code).trim():await credential(userId,code)});token=r.token;return r.data;},
+    async login(userId,code){mode='live';let r;try{r=await live('login',{userId,code:TripPasswords.isAccessCode(String(code).trim())?String(code).trim():await credential(userId,code)});}catch(error){throw normalizeError(error);}token=r.token;return r.data;},
     async changePassword(userId,currentPassword,newPassword,confirmation,requestId){
       TripCore.assert(mode==='live','Password changes are available in your private account.');
       TripPasswords.validate(newPassword,confirmation);

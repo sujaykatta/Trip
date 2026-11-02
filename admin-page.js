@@ -21,8 +21,9 @@ async function loadAdminReport() {
     if (generation === adminGeneration) { adminLoading = false; if (page === 'admin' && data) render(); }
   }
 }
-async function navigatePage(nextPage) {
+async function navigatePage(nextPage, {push=true}={}) {
   if (nextPage === 'admin' && data?.me.role !== 'admin') throw new Error('Only the trip admin can open this page.');
+  if (push && nextPage !== page) history.pushState({page:nextPage}, '', '#'+nextPage);
   page = nextPage; render(); window.scrollTo(0,0);
   if (page === 'admin') await loadAdminReport();
 }
