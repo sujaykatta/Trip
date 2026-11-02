@@ -114,6 +114,13 @@ window.TripAPI = (() => {
       TripCore.assert(TripCore.MEMBERS.find(u=>u.id===demoUser)?.role==='admin','Only the trip admin can view individual financial reports.');
       return {...snapshot(),adminMembers:TripCore.MEMBERS.map(u=>({...u,status:'active'}))};
     }
+    if(action==='adminResetCode') {
+      TripCore.assert(TripCore.MEMBERS.find(u=>u.id===demoUser)?.role==='admin','Only the trip admin can reset access codes.');
+      TripCore.assert(TripCore.MEMBERS.some(u=>u.id===p.userId),'Choose an active traveler.');
+      TripCore.assert(p.userId!==demoUser,'Use Change password for your own account.');
+      // Sample accounts have no credentials; return an illustrative code without changing anything.
+      return {userId:p.userId,code:random(),sample:true};
+    }
     if(action==='download') { const doc=snapshot().documents.find(d=>d.id===p.id);TripCore.assert(doc && demo.files[p.id],'File unavailable.');return demo.files[p.id]; }
     const key=demoUser+':'+requestId,hash=JSON.stringify({action,p});
     if(demo.requests[key]) {TripCore.assert(demo.requests[key].hash===hash,'This request ID was used for different data. Reopen the form.');return {...snapshot(),savedId:demo.requests[key].id};}

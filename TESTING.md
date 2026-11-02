@@ -102,3 +102,8 @@ Run this on the actual published HTTPS Pages site after configuring Apps Script.
 - [ ] The overview collapses and stays collapsed after adding or editing a plan.
 - [ ] Flights/transfers, stays, activities and optional stops are visibly different colours in both the overview and the day cards.
 - [ ] On a phone the map drawer sits above the days and is closed by default; the bar fits at 320px.
+
+## Admin account access (added 3 November 2026)
+
+- [ ] After redeploying the backend: as Sujay, reset a test-agreed traveler's code; their other browsers are signed out; their old password fails; the new code signs in; they can set a new password.
+- [ ] Copy code, Copy message and (on a phone) Share work; closing the dialog removes the code from the page; non-admins see no Account access panel and the backend rejects their reset requests.

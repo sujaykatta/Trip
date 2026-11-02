@@ -135,6 +135,20 @@ try{
   fxOffline=false;await page.locator('[data-action=fx-refresh]').click();await expect(page.locator('#fx-rate')).toContainText('ExchangeRate-API');
   await page.setViewportSize({width:320,height:740});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'converter overflow at 320px');await page.setViewportSize({width:1440,height:1050});
  });
+ await check('admin resets a traveler’s access code, sees it once, and can copy the code or a sign-in message',async()=>{
+  await page.setViewportSize({width:1440,height:1000});await context.grantPermissions(['clipboard-read','clipboard-write'],{origin:new URL(process.env.TRIP_TEST_URL||'http://localhost:4173').origin});
+  if(await page.locator('#modal').evaluate(d=>d.open))await page.keyboard.press('Escape');if(await page.locator('.welcome').count()){await page.locator('[data-action=preview]').click();await page.locator('.trip-hero').waitFor();}
+  if(await page.evaluate(()=>data.me.id)!=='sujay'){await page.locator('[data-page=profile]').first().click();await page.locator('[data-action=switch-preview][data-id=sujay]').click();}
+  await page.locator('[data-page=admin]').first().click();const panel=page.locator('.admin-access-panel');await expect(panel).toContainText('nobody can read them');
+  await expect(panel.locator('[data-action=admin-reset-code]')).toHaveCount(4);await expect(panel.locator('[data-action=admin-reset-code][data-id=sujay]')).toHaveCount(0);
+  await panel.locator('[data-action=admin-reset-code][data-id=niyanth]').click();await expect(page.locator('#modal-title')).toContainText('Reset Niyanth');
+  await page.locator('[data-action=admin-reset-confirm]').click();await expect(page.locator('#modal-title')).toContainText('Niyanth’s new access code');
+  const code=await page.locator('#reset-code').inputValue();assert.match(code,/^[a-f0-9]{64}$/);
+  await page.locator('[data-action=copy-reset-code]').click();await expect(page.locator('#modal .toast')).toContainText('Access code copied');assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),code);
+  await page.locator('[data-action=copy-reset-message]').click();const message=await page.evaluate(()=>navigator.clipboard.readText());assert.ok(message.includes('Niyanth')&&message.includes(code)&&message.includes('Change password'));
+  await page.keyboard.press('Escape');await expect(page.locator('#modal')).not.toBeVisible();await expect.poll(()=>page.evaluate(()=>resetCodeShown),{message:'the code is dropped when the dialog closes'}).toBe(null);
+  assert.match(await page.evaluate(()=>TripAPI.call('adminResetCode',{userId:'sujay'}).then(()=> 'ok',e=>e.message)),/Change password/);
+ });
  assert.deepEqual(errors,[]);console.log('PASS no browser runtime or resource errors');
 }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

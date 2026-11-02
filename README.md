@@ -299,3 +299,9 @@ The Map section renders an offline SVG basemap with numbered dates and a day sli
 ### Dong ⇄ rupee converter (3 November 2026)
 
 The top of Overview converts Vietnamese dong to Indian rupees and back: type in either box, or use the quick amounts. The rate is today's market rate from ExchangeRate-API (`open.er-api.com`), with Currency API (`latest.currency-api.pages.dev`) as a fallback. Both are free, need no key and are allowed in the CSP `connect-src`. The rate is cached in this browser for the day. If neither service answers, the converter uses the last rate it fetched, or the trip's agreed VND rate from Trip settings, and says so. The converter is for reference only: expenses still use the agreed rates saved with each bill.
+
+### Account access for the admin (3 November 2026)
+
+Passwords can't be shown to anyone, the admin included: the browser turns each password into a one-way PBKDF2 proof before sending it, and the backend stores only a peppered hash of that proof. Instead, **Admin dashboard → Account access** has **Reset access code** for every other traveler. It replaces their credential with a new 64-character access code, signs them out everywhere, clears their throttling counters, writes an audit entry without the code, and shows the code once with **Copy code**, **Copy message** (step-by-step sign-in text) and, on phones, **Share…**. The code isn't stored anywhere readable and is dropped from the page when the dialog closes. The traveler signs in with it and can then set their own password. Sujay can't reset his own code here; use Change password.
+
+This needs the `adminResetCode` action in `backend/Code.gs`. Copy the updated `Code.gs` into the Apps Script project, save, then **Deploy → Manage deployments → Edit → New version → Deploy**, keeping the same `/exec` URL. Until then the button reports that the backend needs redeploying.

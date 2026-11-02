@@ -231,3 +231,12 @@ details.journey-sheet:not([open]){padding-bottom:30px}
 .fx-rate{font-size:11px;line-height:1.6;color:var(--muted);margin:12px 0 0}
 .fx-card.is-fallback .fx-rate{color:var(--amber-text)}
 @media(max-width:600px){.fx-card{padding:16px}.fx-grid{grid-template-columns:minmax(0,1fr);gap:8px}.fx-equals{display:none}.fx-field input{font-size:20px}}
+/* Admin: account access and one-time reset codes */
+.admin-access-panel{padding:20px 22px;margin:0 0 26px}
+.admin-access-head{display:flex;gap:12px;align-items:flex-start}.admin-access-head>.icon{width:20px;height:20px;color:var(--green);margin-top:3px;flex:0 0 auto}.admin-access-head h2{font-size:18px}.admin-access-head p{font-size:12px;color:var(--muted);margin-top:4px;max-width:70ch;line-height:1.6}
+.admin-access-list{display:grid;gap:8px;margin-top:14px}
+.admin-access-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:13px;background:var(--panel-solid)}
+.admin-access-row>span:not(.avatar){flex:1;min-width:0;display:grid;gap:2px}.admin-access-row strong{font-size:13px}.admin-access-row small{font-size:11px;color:var(--muted)}
+.code-field{font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important;font-size:14px!important;letter-spacing:.04em;word-break:break-all;resize:none;line-height:1.6;width:100%}
+.reset-actions{flex-wrap:wrap;gap:8px}
+@media(max-width:600px){.admin-access-row{flex-wrap:wrap}.admin-access-row .button{width:100%}}

@@ -170,6 +170,22 @@ function rpc(request) {
       props_().deleteProperty(attemptKey);props_().deleteProperty('ATTEMPT_'+user.id);
       return {ok:true,result:{passwordChanged:true}};
     }
+    // Passwords are never recoverable. The admin can only replace another traveler's credential with a fresh
+    // access code, which is returned once to the admin's browser and never stored or logged in readable form.
+    if(action==='adminResetCode') {
+      TripCore.assert(user.role==='admin','Only the trip admin can reset access codes.');
+      var target=db.Users.find(u=>u.id===p.userId && u.status==='active');
+      TripCore.assert(target,'Choose an active traveler.');
+      TripCore.assert(target.id!==user.id,'Use Change password for your own account.');
+      var freshCode=secret_();
+      write_(db,'Users',Object.assign({},target,{codeHash:hashCode_(freshCode),updatedAt:now_()}));
+      audit_(db,user,'Reset an access code',target.id,{},null,null,[user.id,target.id]);
+      commitStarted=true;commit_(db);
+      var active=props_().getProperties();
+      Object.keys(active).filter(k=>k.startsWith('SESSION_')).forEach(k=>{if(JSON.parse(active[k]).userId===target.id)props_().deleteProperty(k);});
+      props_().deleteProperty('ATTEMPT_'+target.id);props_().deleteProperty('PASSWORD_ATTEMPT_'+target.id);
+      return {ok:true,result:{userId:target.id,code:freshCode}};
+    }
     var previous=db.AuditLog.find(a=>a.actorId===user.id && a.requestId===request.requestId);
     if(previous) { TripCore.assert(previous.requestHash===digest_(JSON.stringify({action:request.action,payload:request.payload})), 'This request ID was already used for different data.'); return {ok:true,result:Object.assign(snapshot_(db,user), {savedId:previous.entityId})}; }
     var old=null, record=null, table='', label='', audience=null;
