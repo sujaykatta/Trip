@@ -5,6 +5,8 @@ var TripRouteMap = (()=>{
   {id:'PQC',name:'Phu Quoc',lat:10.169783,lon:103.99353,aliases:['phu quoc','pqc'],dx:-13,dy:28,anchor:'end'},
   {id:'HAN',name:'Hanoi',lat:21.221201,lon:105.806999,aliases:['hanoi','ha noi','han','ha long','halong','lan ha'],dx:20,dy:-12,anchor:'start'},
   {id:'DAD',name:'Da Nang',lat:16.0439,lon:108.198997,aliases:['da nang','danang','dad','hoi an'],dx:20,dy:-10,anchor:'start'},
+  {id:'NBH',name:'Ninh Binh',lat:20.25667,lon:105.89639,aliases:['ninh binh','tam coc','trang an','bich dong','hang mua'],dx:-18,dy:18,anchor:'end'},
+  {id:'CBA',name:'Cat Ba',lat:20.795,lon:107.011,aliases:['cat ba','cba'],dx:22,dy:20,anchor:'start'},
   {id:'VTG',name:'Vũng Tàu',lat:10.375093,lon:107.096185,aliases:['vung tau','vtg'],dx:18,dy:30,anchor:'start'}
  ];
  const normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').toLowerCase();

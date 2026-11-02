@@ -28,3 +28,12 @@ Additional itinerary locations checked 1 November 2026:
 Dashed lines indicate selected-day visit order only, not a road route or travel-time calculation. Amber markers indicate optional/alternative visits.
 
 Photo references are linked thumbnails loaded only on matching itinerary cards with visible source links. Oasis/Me photos are marked provisional; they do not confirm branch or seasonal decorations.
+
+Northern route revision (2 November 2026):
+- Ninh Binh map-region reference: Trang An complex, 20.25667, 105.89639, https://en.wikipedia.org/wiki/Tr%C3%A0ng_An_Scenic_Landscape_Complex . Area marker, not a hotel or boat departure point.
+- Cat Ba island-area reference: 20.795, 107.011, https://en.wikipedia.org/wiki/C%C3%A1t_B%C3%A0_Island . No guessed embarkation pin; boat connection remains unconfirmed.
+- Hang Mua viewpoint: 20.229379, 105.933717, https://www.juzaphoto.com/destinazioni.php?d=hang_mua_viewpoint&l=en .
+- Bich Dong pagoda: 20.21806, 105.91444, https://www.vietnam-pagodas.com/en/chua/chua-bich-dong .
+- Photos: Vietnam Tourism, https://vietnam.travel/things-to-do/10-must-do-activities-ninh-binh/ (Trang An, Hang Mua, Bich Dong) and https://vietnam.travel/things-to-do/what-to-do-in-ha-long-bay/ (bay kayaking reference; does not establish an exact Cat Ba route). Image URLs stay on the publisher's host with visible source links.
+- Cruise reference only: https://eliteoftheseas.com/itineraries/2days-1night-discovery-halong-lan-ha-bay returns to mainland about 11:15–11:20. Exact booked operator and any Cat Ba drop-off remain to confirm.
+- Thang Long address: https://www.thanglongwaterpuppet.org/lien-he/ . No December show time assumed.
