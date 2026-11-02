@@ -67,8 +67,10 @@ window.TripAPI = (() => {
     // A bridge that stops answering is dropped on timeout so the next call reconnects with a fresh channel.
     return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);resetBridge();reject(new Error('The request timed out. Retry with the same form to avoid a duplicate.'));},65000);pending.set(id,{resolve,reject,timer});source.postMessage({type:'trip:request',channel,id,request:{action,payload,token:authToken,requestId}},origin);});
   }
+  // Access codes are lowercase hex; accept them typed or pasted in capitals.
+  function normalizeCode(value){const raw=String(value||'').trim();return /^[A-Fa-f0-9]{64}$/.test(raw)?raw.toLowerCase():raw;}
   async function credential(userId,value) {
-    value=String(value||'').trim();
+    value=normalizeCode(value);
     if(TripPasswords.isAccessCode(value))return value;
     TripCore.assert(value.length>0 && value.length<=128,'Enter your password or original access code.');
     const info=await live('authInfo',{userId});
@@ -133,7 +135,7 @@ window.TripAPI = (() => {
   }
   return {
     prepareLogin(){return mode==='live'?connect().then(()=>true,()=>false):Promise.resolve(false);},
-    async login(userId,code){mode='live';let r;try{r=await live('login',{userId,code:TripPasswords.isAccessCode(String(code).trim())?String(code).trim():await credential(userId,code)});}catch(error){throw normalizeError(error);}token=r.token;return r.data;},
+    async login(userId,code){mode='live';code=normalizeCode(code);let r;try{r=await live('login',{userId,code:TripPasswords.isAccessCode(String(code).trim())?String(code).trim():await credential(userId,code)});}catch(error){throw normalizeError(error);}token=r.token;return r.data;},
     async changePassword(userId,currentPassword,newPassword,confirmation,requestId){
       TripCore.assert(mode==='live','Password changes are available in your private account.');
       TripPasswords.validate(newPassword,confirmation);
