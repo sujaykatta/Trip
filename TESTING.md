@@ -87,7 +87,7 @@ Run this on the actual published HTTPS Pages site after configuring Apps Script.
 
 ## Phone navigation and recovery (added 3 November 2026)
 
-- [ ] At 320 px and 390 px the bottom bar shows Home, Itinerary, Map, Expenses and More; More opens Flights, Shared vault, Admin (Sujay only), My account, Refresh and the theme switch.
+- [ ] At 320 px and 390 px the bottom bar shows Home, Itinerary, Flights, Expenses and More; More opens Map, Shared vault, Admin (Sujay only), My account, Refresh and the theme switch.
 - [ ] Browser Back returns to the previous page while signed in; reloading a private session asks before signing out.
 - [ ] Leave a live session idle until a request times out, then retry: the next action reconnects without a page reload.
 - [ ] After eight hours, any action returns to sign-in with “Your session ended. Please sign in again.”

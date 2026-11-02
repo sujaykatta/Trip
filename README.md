@@ -280,7 +280,7 @@ The Map section renders an offline SVG basemap with numbered dates and a day sli
 
 ### Phone navigation, history and recovery (3 November 2026)
 
-- Phones show Home, Itinerary, Map and Expenses in the bottom bar. **More** opens a sheet with Flights, Shared vault, Admin (Sujay only), My account, Refresh trip and the theme switch.
+- Phones show Home, Itinerary, Flights and Expenses in the bottom bar. **More** opens a sheet with Map, Shared vault, Admin (Sujay only), My account, Refresh trip and the theme switch.
 - Each page has its own address (`#home`, `#expenses`, …). Browser Back and Forward move between pages without signing out. Reloading a private session still signs out, so the browser asks first.
 - Live sign-in works only on the address in `frontendOrigin` (the backend's `FRONTEND_ORIGIN`). A local copy says so immediately instead of waiting for the bridge to time out; use **Take a look around** there. A real connection failure is reported after one pair of 30-second attempts.
 - If a Google request times out, the app drops that bridge and reconnects on the next action. An expired eight-hour session returns to the sign-in screen with a message. Sign out never waits on the network.
