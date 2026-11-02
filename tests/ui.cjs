@@ -149,6 +149,21 @@ try{
   await page.keyboard.press('Escape');await expect(page.locator('#modal')).not.toBeVisible();await expect.poll(()=>page.evaluate(()=>resetCodeShown),{message:'the code is dropped when the dialog closes'}).toBe(null);
   assert.match(await page.evaluate(()=>TripAPI.call('adminResetCode',{userId:'sujay'}).then(()=> 'ok',e=>e.message)),/Change password/);
  });
+ await check('vault files preview inside the app: text receipts, PDF passports, and Back returns to the record',async()=>{
+  await page.setViewportSize({width:1440,height:1000});if(await page.locator('#modal').evaluate(d=>d.open))await page.keyboard.press('Escape');if(await page.locator('.welcome').count()){await page.locator('[data-action=preview]').click();await page.locator('.trip-hero').waitFor();}
+  // A PDF credential previews in a frame (or explains when the browser has no PDF viewer).
+  await page.locator('[data-page=files]').first().click();await page.locator('[data-action=vault-tab][data-id="travel-docs"]').click();
+  await page.locator('.credential-card [data-action=preview-file]').first().click();await expect(page.locator('#modal .file-preview')).not.toHaveAttribute('aria-busy','true');
+  const pdf=await page.locator('#modal .file-preview').evaluate(box=>({frame:box.querySelector('iframe')?.src||'',note:box.textContent}));assert.ok(pdf.frame.startsWith('blob:')||/can’t show PDFs/.test(pdf.note),'PDF shows in a blob frame or explains the fallback');
+  await expect(page.locator('#modal [data-action=preview-open]')).toBeEnabled();await expect(page.locator('#modal [data-action=download]')).toHaveCount(1);
+  await page.keyboard.press('Escape');await expect.poll(()=>page.evaluate(()=>previewUrl)).toBe('');
+  // A text receipt opened from its document detail previews as text, and Back returns to that detail.
+  const receipt=await page.evaluate(()=>data.documents.find(d=>d.filename==='test-receipt.txt')?.id);assert.ok(receipt,'UI receipt exists');
+  await page.evaluate(id=>documentDetail(id),receipt);await page.locator('#modal [data-action=preview-file]').click();
+  await expect(page.locator('#modal .preview-text')).toContainText('Sample receipt for UI verification only');
+  await page.locator('#modal [data-action=preview-back]').click();await expect(page.locator('#modal-title')).toContainText('receipt');await expect(page.locator('#modal [data-action=preview-file]')).toHaveCount(1);
+  await page.keyboard.press('Escape');
+ });
  assert.deepEqual(errors,[]);console.log('PASS no browser runtime or resource errors');
 }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

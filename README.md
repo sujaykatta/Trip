@@ -307,3 +307,7 @@ Passwords can't be shown to anyone, the admin included: the browser turns each p
 Storage: `Users.codeHash` keeps the traveler's credential as before (original access-code hash, or `p1$salt$hash` for a password), optionally followed by `|c$hash` for the admin-issued code. No Sheet columns change.
 
 This needs the `adminResetCode` action and the updated sign-in check in `backend/Code.gs`. Copy the updated `Code.gs` into the Apps Script project, save, then **Deploy → Manage deployments → Edit → New version → Deploy**, keeping the same `/exec` URL. Until then the button reports that the backend needs redeploying.
+
+### Previewing files (3 November 2026)
+
+Passports, insurance and other vault files, expense receipts and flight tickets have **Preview** next to **Download**. Images and text/CSV files show inside the app; PDFs open in the browser's built-in PDF viewer inside the dialog, with **Open full screen** and **Download**. The file is fetched through the same permission-checked download action, turned into a private `blob:` URL with the validated file type, and released when the dialog closes. The CSP adds `blob:` to `frame-src` for this. Browsers without a built-in PDF viewer (Chrome on Android) show a note and use Open full screen or Download instead.
