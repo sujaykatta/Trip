@@ -8,3 +8,8 @@ test('a travel day includes both endpoints and future arrivals are not treated a
 test('confirmed stays and unknown activity locations remain reviewable',()=>{const s={flights:[],documents:[hotel('Vũng Tàu','confirmed'),{id:'activity',date:'2026-12-18',title:'Explore',category:'Day itinerary',notes:JSON.stringify({format:'trip-plan-v1',location:'Not mapped yet',status:'tentative'})}]};const d=M.day(s,'2026-12-18');assert.deepEqual(d.active,['VTG']);assert.equal(d.unmapped[0].id,'activity');assert.equal(d.plans.length,1);assert.deepEqual(M.day({flights:[],documents:[]},'2026-12-18').active,[]);});
 
 test('Ninh Binh and Cat Ba remain distinct from Hanoi without invented flights',()=>{assert.equal(M.locate('Ninh Bình').id,'NBH');assert.equal(M.locate('Cat Ba Island').id,'CBA');const plans=[['Ninh Binh','2026-12-21'],['Cat Ba Island','2026-12-23']].map(([location,date])=>({date,category:'Day itinerary',title:'Visit',notes:JSON.stringify({format:'trip-plan-v1',location,status:'tentative'})}));assert.deepEqual(M.day({flights:[],documents:plans},'2026-12-21').active,['NBH']);assert.deepEqual(M.day({flights:[],documents:plans},'2026-12-23').active,['CBA']);assert.deepEqual(M.routes({flights:[],documents:plans}),[]);});
+test('lowercase "han" in a Da Nang place name is not Hanoi; airport codes still count when written as codes',()=>{
+ for(const s of ['Han River cruise, Da Nang','Han Market, Da Nang','Dragon Bridge by the Han river'])assert.notEqual(M.locate(s)?.id,'HAN',s);
+ assert.equal(M.locate('Han River cruise, Da Nang').id,'DAD');
+ for(const s of ['Noi Bai (HAN)','HAN','Hanoi Old Quarter','Ha Long Bay'])assert.equal(M.locate(s).id,'HAN',s);
+});

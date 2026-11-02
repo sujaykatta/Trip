@@ -10,7 +10,9 @@ var TripRouteMap = (()=>{
   {id:'VTG',name:'Vũng Tàu',lat:10.375093,lon:107.096185,aliases:['vung tau','vtg'],dx:18,dy:30,anchor:'start'}
  ];
  const normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').toLowerCase();
- const locate=s=>{const n=normalize(s);return places.find(p=>p.aliases.some(a=>new RegExp('(?:^|[^a-z])'+a+'(?:$|[^a-z])').test(n)))||null;};
+ // Three-letter airport codes count only when written as codes ("HAN", "(DAD)"), so names like "Han River, Da Nang" are not read as Hanoi.
+ const isCode=(p,a)=>a===p.id.toLowerCase();
+ const locate=s=>{const raw=String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''),n=normalize(s);return places.find(p=>p.aliases.some(a=>isCode(p,a)?new RegExp('(?:^|[^A-Za-z])'+p.id+'(?:$|[^A-Za-z])').test(raw):new RegExp('(?:^|[^a-z])'+a+'(?:$|[^a-z])').test(n)))||null;};
  const point=p=>({x:(p.lon-101.5)*47,y:(24-p.lat)*47});
  const meta=d=>{try{const p=JSON.parse(d.notes);return p.format==='trip-plan-v1'?p:null;}catch{return null;}};
  const pending=f=>/booking in progress|pending/i.test(f.notes||'');

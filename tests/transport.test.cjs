@@ -50,3 +50,39 @@ test('connection retries with a fresh channel, ignores the old frame and can rec
  listener({origin,source,data:{type:'trip:response',channel:new URL(frames[2].src).searchParams.get('channel'),id:messages[0].id,response:{ok:true,result:{token:'b'.repeat(64),data:{me:{id:'niyanth'}}}}}});
  assert.equal((await second).me.id,'niyanth');assert.equal(timers.size,0);
 });
+test('an RPC timeout drops the stale bridge, the next call reconnects, session expiry clears the token and sign-out does not wait on the bridge',async()=>{
+ let listener;const frames=[],timers=new Map(),messages=[];let nextTimer=0;
+ const context={crypto:crypto.webcrypto,Map,Array,Promise,Error,Uint8Array,URL,console,
+ setTimeout:(fn,ms)=>{const id=++nextTimer;timers.set(id,{fn,ms});return id;},clearTimeout:id=>timers.delete(id),
+ TripPasswords:{isAccessCode:v=>/^[a-f0-9]{64}$/.test(v)},
+ window:{TRIP_CONFIG:{appsScriptUrl:'https://script.google.com/macros/s/TEST/exec'},addEventListener:(_,cb)=>listener=cb},
+ document:{createElement:()=>({remove(){this.removed=true;}}),body:{append:frame=>frames.push(frame)}}};
+ vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../api.js'),'utf8'),context);
+ const api=context.window.TripAPI,source={postMessage:message=>messages.push(message)},origin='https://example-script.googleusercontent.com';
+ const channelOf=frame=>new URL(frame.src).searchParams.get('channel');
+ const ready=frame=>listener({origin,source,data:{type:'trip:ready',channel:channelOf(frame)}});
+ const settle=()=>new Promise(resolve=>setImmediate(resolve));
+ const fireRpcTimeout=()=>{const entry=[...timers].find(([,t])=>t.ms===65000);assert.ok(entry,'an RPC timer is pending');timers.delete(entry[0]);entry[1].fn();};
+ // Sign in through the first bridge.
+ const login=api.login('niyanth','a'.repeat(64));ready(frames[0]);await settle();assert.equal(messages.length,1);
+ listener({origin,source,data:{type:'trip:response',channel:channelOf(frames[0]),id:messages[0].id,response:{ok:true,result:{token:'t'.repeat(64),data:{me:{id:'niyanth'}}}}}});
+ await login;
+ // The bridge goes silent: the request times out and the frame is discarded.
+ const stale=assert.rejects(api.call('load'),/timed out/);await settle();assert.equal(messages.length,2);fireRpcTimeout();await stale;
+ assert.equal(frames[0].removed,true,'stale frame removed');
+ // The next call opens a fresh frame with a new channel and keeps the session token.
+ const retry=api.call('load');await settle();assert.equal(frames.length,2);assert.notEqual(channelOf(frames[1]),channelOf(frames[0]));
+ ready(frames[1]);await settle();assert.equal(messages.length,3);assert.equal(messages[2].request.token,'t'.repeat(64));
+ // Session expiry is surfaced as a flagged error and clears the token.
+ listener({origin,source,data:{type:'trip:response',channel:channelOf(frames[1]),id:messages[2].id,response:{ok:false,error:'Session expired. Please sign in again.'}}});
+ await assert.rejects(retry,error=>error.sessionExpired===true&&/session ended/i.test(error.message));
+ const after=api.call('load');await settle();assert.equal(messages[3].request.token,'');
+ listener({origin,source,data:{type:'trip:response',channel:channelOf(frames[1]),id:messages[3].id,response:{ok:false,error:'Unknown operation.'}}});
+ await assert.rejects(after,/latest backend version/);
+ // Sign-out resolves immediately even though the server never answers, and still sends the revocation with the old token.
+ const relogin=api.login('niyanth','a'.repeat(64));await settle();
+ listener({origin,source,data:{type:'trip:response',channel:channelOf(frames[1]),id:messages[4].id,response:{ok:true,result:{token:'u'.repeat(64),data:{me:{id:'niyanth'}}}}}});
+ await relogin;
+ let resolved=false;api.logout().then(()=>resolved=true);await settle();assert.equal(resolved,true);
+ assert.equal(messages[5].request.action,'logout');assert.equal(messages[5].request.token,'u'.repeat(64));
+});

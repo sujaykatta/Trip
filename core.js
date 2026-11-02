@@ -82,7 +82,7 @@ var TripCore = (() => {
     return plan;
   }
   function url(value) { const s = text(value, 1000, false); assert(!s || /^https:\/\/[^\s]+$/i.test(s), 'Links must start with https://.'); return s; }
-  function csv(rows) { return rows.map(row => row.map(v => { let s = String(v ?? ''); if (/^[\s]*[=+@-]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; }).join(',')).join('\r\n'); }
+  function csv(rows) { return rows.map(row => row.map(v => { let s = String(v ?? ''); if (/^[\s]*[=+@-]/.test(s) && !/^-?\d+(\.\d+)?$/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; }).join(',')).join('\r\n'); }
   return { MEMBERS, CURRENCIES, CATEGORIES, assert, text, decimal, minor, convert, allocate, date, members, expense, balances, settlementPlan, url, csv };
 })();
 if (typeof module !== 'undefined') module.exports = TripCore;

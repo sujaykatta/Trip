@@ -4,7 +4,7 @@
     "source": "https://www.klook.com/ja/blog/hanoi-airport-to-city-vietnam/",
     "caption": "Noi Bai International Airport (HAN) · terminal reference · Klook",
     "file": "assets/trip-photos/airport-han.jpg",
-    "bytes": 112513
+    "bytes": 107181
   },
   "DAD": {
     "image": "https://media.vov.vn/sites/default/files/world/Uploaded/bichthuan/2015_11_15/danangairp1.jpg",
@@ -17,15 +17,15 @@
     "image": "https://vj-prod-website-cms.s3.ap-southeast-1.amazonaws.com/g3-1715917065765.png",
     "source": "https://www.vietjetair.com/en/destinations/experience/list-of-domestic-and-international-airports-in-vietnam",
     "caption": "Tan Son Nhat International Airport (SGN) · terminal reference · Vietjet",
-    "file": "assets/trip-photos/airport-sgn.png",
-    "bytes": 775317
+    "file": "assets/trip-photos/airport-sgn.jpg",
+    "bytes": 256580
   },
   "HYD": {
     "image": "https://dx0mo0fmeu4hj.cloudfront.net/uploads/hial_banner_02_top_3429e00e53.jpg",
     "source": "https://www.hyderabad.aero/",
     "caption": "Rajiv Gandhi International Airport (HYD) · official airport image",
     "file": "assets/trip-photos/airport-hyd.jpg",
-    "bytes": 146264
+    "bytes": 141643
   },
   "PQC": {
     "image": "https://res.klook.com/image/upload/fl_lossy.progressive%2Cq_85/c_fill%2Cw_1000/v1725879097/gmayapm0lupprdmo69wi.jpg",
@@ -39,7 +39,7 @@
     "source": "https://vietnam.travel/places-to-go/southern-vietnam/ho-chi-minh-city/",
     "caption": "Ho Chi Minh City area reference · exact venue / hotel to confirm",
     "file": "assets/trip-photos/reference-sgn.jpg",
-    "bytes": 264305
+    "bytes": 253503
   },
   "han": {
     "image": "https://images.vietnam.travel/styles/card_wide_1200w/s3/2017-06/vietnam-travel-5.jpg?itok=S0kyMyUm",
@@ -52,7 +52,7 @@
     "image": "https://datviettour.com.vn/uploads/images/tin-tuc-SEO/mien-nam/Kien-Giang/phu-quoc/danh-thang/vuong-quoc-sao-bien.jpg",
     "source": "https://datviettour.com.vn/tin-tuc/lang-chai-rach-vem-o-dau-an-gi-choi-gi-tai-day",
     "caption": "Phu Quoc beach area reference · exact hotel / meeting point to confirm",
-    "file": "assets/trip-photos/reference-pqc.jpg",
+    "file": "assets/trip-photos/reference-starfish.jpg",
     "bytes": 192200
   },
   "nbh": {
@@ -67,14 +67,14 @@
     "source": "https://vietnam.travel/places-to-go/central-vietnam/da-nang/",
     "caption": "Da Nang area reference · exact venue / hotel to confirm",
     "file": "assets/trip-photos/reference-dad.jpg",
-    "bytes": 174550
+    "bytes": 169392
   },
   "landmark": {
     "image": "https://images.vietnam.travel/inline-images/thap_hcm-edit.jpg",
     "source": "https://vietnam.travel/things-to-do/10-tourist-spots-not-be-missed-ho-chi-minh-city/",
     "caption": "Landmark 81 complex · Vietnam Tourism",
     "file": "assets/trip-photos/reference-landmark.jpg",
-    "bytes": 336671
+    "bytes": 127199
   },
   "grandworld": {
     "image": "https://media1.thrillophilia.com/filestore/4tkjyrcfjn4y2kvdy4zwz9muf78y_52681262911_096921b45d_b.jpg",
@@ -102,28 +102,28 @@
     "source": "https://vietnam.travel/things-to-do/vietnam-water-puppets/",
     "caption": "Vietnamese water puppets · display reference · Vietnam Tourism",
     "file": "assets/trip-photos/reference-puppets.jpg",
-    "bytes": 470858
+    "bytes": 201223
   },
   "bay": {
     "image": "https://images.vietnam.travel/inline-images/782A1780_resize.jpg",
     "source": "https://vietnam.travel/things-to-do/what-to-do-in-ha-long-bay/",
     "caption": "Ha Long / Lan Ha bay scenery reference · exact cruise to confirm",
-    "file": "assets/trip-photos/reference-bay.jpg",
-    "bytes": 874301
+    "file": "assets/trip-photos/reference-existing-3.jpg",
+    "bytes": 273105
   },
   "mekong": {
     "image": "https://images.vietnam.travel/2017-07/southern-vietnam_1.jpg",
     "source": "https://vietnam.travel/place-to-go/mekong-delta/",
     "caption": "Mekong Delta scenery reference · route to confirm",
     "file": "assets/trip-photos/reference-mekong.jpg",
-    "bytes": 271955
+    "bytes": 121938
   },
   "bui": {
     "image": "https://www.vietnamairlines.com/content/dam/legacy-site-assets/SEO-images/2025%20SEO/Thay%20Anh%20Traffic%20Tieng%20Anh/bui%20vien%20walking%20street/experience-the-thrill-of-fire-dancers-street-magicians-turning-bui-vien-into-a-stage-of-wonders.png",
     "source": "https://www.vietnamairlines.com/go/en/plan-book/travel/travel-guide/bui-vien-walking-street",
     "caption": "Bui Vien Walking Street · Vietnam Airlines photo reference",
-    "file": "assets/trip-photos/reference-bui.png",
-    "bytes": 327751
+    "file": "assets/trip-photos/reference-bui.jpg",
+    "bytes": 196698
   },
   "train": {
     "image": "https://www.vietnamairlines.com/content/dam/legacy-site-assets/SEO-images/2025%20SEO/Thay%20Anh%20Traffic%20Tieng%20Anh/hanoi%20train%20street/in-the-face-of-destruction-this-narrow-alleyway-became-a-quiet-testament-to-the-strength-of-the.jpeg",
@@ -151,14 +151,14 @@
     "source": "https://vietnam.travel/places-to-go/southern-vietnam/vung-tau/",
     "caption": "Vũng Tàu area reference · exact hotel to confirm",
     "file": "assets/trip-photos/reference-vtg.jpg",
-    "bytes": 394330
+    "bytes": 239626
   },
   "book": {
     "image": "https://image.vietnamnews.vn/uploadvnnews/Article/2024/2/25/332801_book.jpg",
     "source": "https://vietnamnews.vn/life-style/1650915/hcm-city-to-encourage-reading-culture.html",
     "caption": "Nguyễn Văn Bình Book Street · Vietnam News",
     "file": "assets/trip-photos/reference-book.jpg",
-    "bytes": 364035
+    "bytes": 152129
   },
   "square": {
     "image": "https://www.vietnamairlines.com/~/media/SEO-images/2025%20SEO/Traffic%20TV/saigon-square/saigon-square.jpg",
@@ -172,7 +172,7 @@
     "source": "https://muctim.tuoitre.vn/nang-nong-gen-z-ru-nhau-truot-bang-giai-nhiet-101240325150541901.htm",
     "caption": "Vincom Ice Rink · Tuổi Trẻ / Mực Tím photo reference",
     "file": "assets/trip-photos/reference-ice.jpg",
-    "bytes": 585033
+    "bytes": 93529
   },
   "starfish": {
     "image": "https://datviettour.com.vn/uploads/images/tin-tuc-SEO/mien-nam/Kien-Giang/phu-quoc/danh-thang/vuong-quoc-sao-bien.jpg",
@@ -186,35 +186,35 @@
     "source": "https://visitphuquoc.com.vn/en/hon-thom-cable-car-continues-to-capture-the-attention-of-international-media",
     "caption": "Hòn Thơm cable car · MK Travel / Visit Phu Quoc reference",
     "file": "assets/trip-photos/reference-cable.jpg",
-    "bytes": 356945
+    "bytes": 160035
   },
   "existing-0": {
     "image": "https://images.vietnam.travel/inline-images/Activities%20Ninh%20Binh%20Vietnam%20Travel_0.jpg",
     "source": "https://vietnam.travel/things-to-do/10-must-do-activities-ninh-binh/",
     "caption": "Tràng An caves · Vietnam Tourism",
     "file": "assets/trip-photos/reference-existing-0.jpg",
-    "bytes": 595673
+    "bytes": 257456
   },
   "existing-1": {
     "image": "https://images.vietnam.travel/inline-images/top%20activities%20in%20ninh%20binh-2.jpg",
     "source": "https://vietnam.travel/things-to-do/10-must-do-activities-ninh-binh/",
     "caption": "Hang Múa mountain views · Vietnam Tourism",
     "file": "assets/trip-photos/reference-existing-1.jpg",
-    "bytes": 636288
+    "bytes": 297242
   },
   "existing-2": {
     "image": "https://images.vietnam.travel/inline-images/Activities%20Ninh%20Binh%20Vietnam%20Travel-5_0.jpg",
     "source": "https://vietnam.travel/things-to-do/10-must-do-activities-ninh-binh/",
     "caption": "Bích Động pagoda · Vietnam Tourism",
     "file": "assets/trip-photos/reference-existing-2.jpg",
-    "bytes": 609904
+    "bytes": 269989
   },
   "existing-3": {
     "image": "https://images.vietnam.travel/inline-images/782A1780_resize.jpg",
     "source": "https://vietnam.travel/things-to-do/what-to-do-in-ha-long-bay/",
     "caption": "Bay kayaking reference · exact Cat Ba route to confirm",
     "file": "assets/trip-photos/reference-existing-3.jpg",
-    "bytes": 874301
+    "bytes": 273105
   },
   "existing-4": {
     "image": "https://static.hotdeal.vn/images/1723/1722851/500x500/369685-metashow-tham-quan-va-chup-anh-doc-dao-nhat-viet-nam.jpg",
@@ -235,6 +235,6 @@
     "source": "https://www.vietnam.vn/en/chi-nua-ti-trang-tri-gau-bong-quan-ca-phe-tp-hcm-thanh-diem-check-in-hot-he-2025",
     "caption": "Me Coffee photo reference — venue and seasonal decor to confirm",
     "file": "assets/trip-photos/reference-existing-6.jpg",
-    "bytes": 2568543
+    "bytes": 265400
   }
 }

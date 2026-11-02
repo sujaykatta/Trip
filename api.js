@@ -1,6 +1,6 @@
 /* The live transport sends credentials only through a pinned Apps Script message bridge. */
 window.TripAPI = (() => {
-  let token = '', bridge = null, ready = null, source = null, origin = '', mode = 'live', demo = null, demoUser = '';
+  let token = '', bridge = null, ready = null, source = null, origin = '', mode = 'live', demo = null, demoUser = '', memoryOnly = false, storageNotice = '';
   // Keep the legacy account ID so saved allocations and password proofs remain valid.
   function correctMemberNames(result) {
     if (!result || typeof result !== 'object') return result;
@@ -23,6 +23,15 @@ window.TripAPI = (() => {
       if (event.data.response.ok) job.resolve(correctMemberNames(event.data.response.result)); else job.reject(new Error(event.data.response.error));
     }
   });
+  function resetBridge() {
+    bridge?.remove(); bridge=null; ready=null; source=null; origin=''; resolveReady=null;
+  }
+  function normalizeError(error) {
+    const text=String(error?.message||error||'');
+    if(/session expired|sign in again/i.test(text)) { token=''; const e=new Error('Your session ended. Please sign in again.'); e.sessionExpired=true; return e; }
+    if(/^unknown operation\.?$/i.test(text)) return new Error('This action needs the latest backend version. Ask Sujay to redeploy the Apps Script, then try again.');
+    return error instanceof Error ? error : new Error(text||'Something went wrong.');
+  }
   function connect() {
     if(ready) return ready;
     const url=window.TRIP_CONFIG.appsScriptUrl;
@@ -52,9 +61,10 @@ window.TripAPI = (() => {
     });
     return ready;
   }
-  async function live(action,payload={},requestId) {
+  async function live(action,payload={},requestId,authToken=token) {
     await connect(); const id=random();
-    return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('The request timed out. Retry with the same form to avoid a duplicate.'));},65000);pending.set(id,{resolve,reject,timer});source.postMessage({type:'trip:request',channel,id,request:{action,payload,token,requestId}},origin);});
+    // A bridge that stops answering is dropped on timeout so the next call reconnects with a fresh channel.
+    return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);resetBridge();reject(new Error('The request timed out. Retry with the same form to avoid a duplicate.'));},65000);pending.set(id,{resolve,reject,timer});source.postMessage({type:'trip:request',channel,id,request:{action,payload,token:authToken,requestId}},origin);});
   }
   async function credential(userId,value) {
     value=String(value||'').trim();
@@ -64,7 +74,9 @@ window.TripAPI = (() => {
     return TripPasswords.proof(userId,value,info.salt,window.TRIP_CONFIG.appsScriptUrl);
   }
   function storage(action,value) {
-    return new Promise((resolve,reject)=>{const open=indexedDB.open('vietnam-together-preview',1);open.onupgradeneeded=()=>open.result.createObjectStore('data');open.onerror=()=>reject(new Error('Preview storage is unavailable. Enable browser storage.'));open.onsuccess=()=>{const db=open.result,tx=db.transaction('data',action==='read'?'readonly':'readwrite'),store=tx.objectStore('data');let req=action==='read'?store.get('trip'):store.put(value,'trip');tx.oncomplete=()=>{resolve(req.result);db.close();};tx.onerror=()=>{reject(new Error('Preview storage is full. Remove some attachments or reset the sample trip.'));db.close();};};});
+    if(memoryOnly || typeof indexedDB==='undefined') return Promise.resolve(action==='read'?null:undefined);
+    const unavailable=()=>new Error('Preview storage is unavailable. Enable browser storage.');
+    return new Promise((resolve,reject)=>{let open;try{open=indexedDB.open('vietnam-together-preview',1);}catch{reject(unavailable());return;}open.onupgradeneeded=()=>open.result.createObjectStore('data');open.onerror=()=>reject(unavailable());open.onblocked=()=>reject(unavailable());open.onsuccess=()=>{try{const db=open.result,tx=db.transaction('data',action==='read'?'readonly':'readwrite'),store=tx.objectStore('data');let req=action==='read'?store.get('trip'):store.put(value,'trip');const fail=()=>{reject(new Error('Preview storage is full. Remove some attachments or reset the sample trip.'));db.close();};tx.oncomplete=()=>{resolve(req.result);db.close();};tx.onerror=fail;tx.onabort=fail;}catch{reject(unavailable());}};});
   }
   function seed() {
     const now=new Date().toISOString();
@@ -129,10 +141,15 @@ window.TripAPI = (() => {
       const newCode=await TripPasswords.proof(userId,newPassword,salt,window.TRIP_CONFIG.appsScriptUrl);
       const result=await live('changePassword',{currentCode,newCode,salt},requestId);token='';return result;
     },
-    async startPreview(userId='sujay'){mode='preview';demoUser=userId;demo=await storage('read') || seed();await storage('write',demo);return snapshot();},
+    async startPreview(userId='sujay'){mode='preview';demoUser=userId;
+      try{demo=await storage('read') || seed();await storage('write',demo);}
+      catch{memoryOnly=true;demo=demo||seed();storageNotice='Browser storage is unavailable here, so sample changes last only until this page is closed.';}
+      return snapshot();},
+    takeStorageNotice(){const n=storageNotice;storageNotice='';return n;},
     async resetPreview(){demo=seed();await storage('write',demo);return snapshot();},
-    async call(action,payload={},requestId){return mode==='preview'?preview(action,payload,requestId || crypto.randomUUID()):live(action,payload,requestId);},
-    async logout(){try{if(mode==='live' && token)await live('logout');}finally{token='';demoUser='';}},
+    async call(action,payload={},requestId){if(mode==='preview')return preview(action,payload,requestId || crypto.randomUUID());try{return await live(action,payload,requestId);}catch(error){throw normalizeError(error);}},
+    // Sign-out clears the local session at once; the server revocation runs in the background so a stale bridge cannot hold the UI.
+    async logout(){const authToken=token,wasLive=mode==='live';token='';demoUser='';if(wasLive && authToken)live('logout',{},undefined,authToken).catch(()=>{});},
     get mode(){return mode;}
   };
 })();
