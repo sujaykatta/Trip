@@ -5,6 +5,7 @@ const {chromium,expect}=require('@playwright/test');const fs=require('node:fs');
 const mobileGo=async p=>{if(['map','files','admin','profile'].includes(p)){await page.locator('.mobile-nav [data-action=more-menu]').click();await page.locator(`#modal .more-menu [data-page=${p}]`).click();await expect(page.locator('#modal')).not.toBeVisible();}else await page.locator(`.mobile-nav [data-page=${p}]`).click();};
 try{
  await page.route('**/config.js*',route=>route.fulfill({contentType:'application/javascript',body:"window.TRIP_CONFIG={appsScriptUrl:'',allowPreview:true};"}));
+ let fxOffline=false;await page.route('https://open.er-api.com/**',route=>route.fulfill({contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify(fxOffline?{result:'error'}:{result:'success',time_last_update_unix:1793577600,rates:{INR:0.0037}})}));await page.route('https://latest.currency-api.pages.dev/**',route=>route.fulfill({contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify(fxOffline?{}:{date:'2026-11-02',vnd:{inr:0.0036}})}));
  await page.goto(process.env.TRIP_TEST_URL||'http://localhost:4173');await page.evaluate(()=>{localStorage.setItem('vietnam-theme-v2','light');document.documentElement.dataset.theme='light';});
  await check('welcome screen requires a code, not only a selected name',async()=>{await page.locator('[data-action=login][data-id=sujay]').click();await expect(page.locator('#login-form input[name=code]')).toBeVisible();await expect(page.locator('#login-form')).toContainText('not connected');await page.locator('#modal [data-action=close]').first().click();await expect(page.locator('.welcome')).toBeVisible();});
  await page.screenshot({path:'tests/welcome-desktop.png',fullPage:true,animations:'disabled'});
@@ -119,6 +120,20 @@ try{
   await page.goBack();await expect(page).toHaveURL(/#expenses$/);await expect(page.getByRole('heading',{name:'Shared experiences. Fair splits.',exact:true})).toBeVisible();
   await page.locator('.expense-row').first().click();await expect(page.locator('#modal')).toBeVisible();await page.evaluate(()=>toast('Visible over the dialog'));await expect(page.locator('#modal .modal-toasts .toast')).toBeVisible();
   await page.keyboard.press('Escape');await expect(page.locator('#modal')).not.toBeVisible();await page.setViewportSize({width:1440,height:1050});
+ });
+ await check('overview converter turns dong into rupees and back with today’s rate, and falls back to the agreed rate offline',async()=>{
+  await page.setViewportSize({width:1440,height:1000});if(await page.locator('#modal').evaluate(d=>d.open))await page.keyboard.press('Escape');if(await page.locator('.welcome').count()){await page.locator('[data-action=preview]').click();await page.locator('.trip-hero').waitFor();}
+  await page.evaluate(()=>{try{localStorage.removeItem('vietnam-fx-vnd-inr-v1');}catch{}fxRate=null;});await page.locator('[data-page=home]').first().click();
+  const order=await page.evaluate(()=>[...document.querySelector('main').children].map(el=>el.className));assert.ok(order.findIndex(c=>c.includes('fx-card'))<order.findIndex(c=>c.includes('home-trip-hero')),'converter sits above the hero');
+  await expect(page.locator('#fx-rate')).toContainText('ExchangeRate-API');await expect(page.locator('#fx-rate')).toContainText('₹1 = ₫270.27');
+  await page.locator('#fx-vnd').fill('1,000,000');await expect(page.locator('#fx-inr')).toHaveValue('3,700');
+  await page.locator('#fx-inr').fill('1000');await expect(page.locator('#fx-vnd')).toHaveValue('270,270');
+  await page.locator('[data-action=fx-preset][data-id="vnd:500000"]').click();await expect(page.locator('#fx-vnd')).toHaveValue('500,000');await expect(page.locator('#fx-inr')).toHaveValue('1,850');
+  assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('vietnam-fx-vnd-inr-v1')).day),await page.evaluate(()=>today()),'today’s rate is cached for the day');
+  fxOffline=true;await page.evaluate(()=>{localStorage.removeItem('vietnam-fx-vnd-inr-v1');fxRate=null;});await page.locator('[data-action=fx-refresh]').click();
+  await expect(page.locator('#fx-rate')).toContainText('agreed rate');await expect(page.locator('.fx-card')).toHaveClass(/is-fallback/);await page.locator('#fx-vnd').fill('100000');await expect(page.locator('#fx-inr')).toHaveValue(new RegExp('^'+(await page.evaluate(()=>fxFormat(100000*Number(data.settings.rates.VND),'inr'))).replace(/[.,]/g,'\\$&')+'$'));
+  fxOffline=false;await page.locator('[data-action=fx-refresh]').click();await expect(page.locator('#fx-rate')).toContainText('ExchangeRate-API');
+  await page.setViewportSize({width:320,height:740});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'converter overflow at 320px');await page.setViewportSize({width:1440,height:1050});
  });
  assert.deepEqual(errors,[]);console.log('PASS no browser runtime or resource errors');
 }finally{await browser.close();}

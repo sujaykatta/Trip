@@ -100,6 +100,7 @@ let currentDetail=null,confirmBack=null;
 function confirmAction(title,copy,action,id){confirmBack=$('#modal').open?currentDetail:null;showModal(title,`<p class="muted">${copy}</p><div class="form-error" role="alert" hidden></div><div class="detail-actions">${btn('Keep it',confirmBack?'confirm-back':'close','','button secondary')}${btn('Confirm','confirmed',`data-operation="${action}" data-id="${id}" data-request-id="${crypto.randomUUID()}"`,'button danger-solid')}</div>`);}
 async function withBusy(el,fn){busy=true;el.disabled=true;const label=el.innerHTML;el.innerHTML='<span class="spinner"></span> '+label;try{return await fn();}finally{busy=false;el.disabled=false;el.innerHTML=label;}}
 async function act(el){const action=el.dataset.action,id=el.dataset.id;if(busy && !['theme'].includes(action))return;
+  if(action==='fx-preset'||action==='fx-refresh')return fxAction(action,id);
   if(action==='more-menu')return moreMenu();
   if(action==='skip-to-content'){const h=$('#main-content h1');if(h){h.tabIndex=-1;h.focus();}return;}
   if(action==='clear-filters'){filters={...filters,search:'',category:'',member:'',from:'',to:''};render();return;}

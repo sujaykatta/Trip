@@ -218,3 +218,16 @@ details.journey-sheet:not([open]){padding-bottom:30px}
 @media(max-width:740px){.day-bar{padding:8px 8px 6px;border-radius:0 0 16px 16px;margin:0 -4px 18px}.day-bar-meta{margin-top:6px}.day-bar .day-range-label span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.day-bar .day-range-label{flex:0 0 38%}.day-heading{padding:16px 16px 4px}.timeline-list{padding:4px 14px 2px}.day-timeline .daily-hotel-summary{margin:4px 14px 16px}}
 @media(max-width:600px){.day-timeline .timeline-event{grid-template-columns:58px minmax(0,1fr);gap:10px 12px;padding:14px}.day-timeline .timeline-event:before{left:18px}.day-timeline .timeline-time{padding-left:14px}.day-timeline .timeline-time strong{font-size:15px}.day-timeline .plan-photo{grid-column:1/-1;width:100%;max-width:100%}.day-timeline .plan-photo img{width:100%;height:150px}.day-timeline .plan-photo figcaption{max-width:none}}
 .day-bar-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+/* Overview: live dong ⇄ rupee converter */
+.fx-card{padding:20px 22px;margin:0 0 22px}
+.fx-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.fx-head h2{font-size:20px;margin-top:4px}
+.fx-grid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:end;margin-top:14px}
+.fx-field{display:grid;gap:6px;min-width:0}.fx-field span{font-size:11px;font-weight:600;color:var(--muted)}
+.fx-field input{width:100%;min-width:0;font:inherit;font-size:22px;font-weight:600;letter-spacing:-.02em;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel-solid);color:var(--text);font-variant-numeric:tabular-nums}
+.fx-field input:focus-visible{outline:2px solid var(--green);outline-offset:1px}
+.fx-equals{font-size:20px;color:var(--muted);padding-bottom:14px}
+.fx-presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.fx-chip{border:1px solid var(--line);border-radius:20px;padding:6px 11px;font-size:11px;font-weight:600;background:var(--panel-solid);color:var(--text);cursor:pointer}.fx-chip:hover{background:var(--soft)}
+.fx-rate{font-size:11px;line-height:1.6;color:var(--muted);margin:12px 0 0}
+.fx-card.is-fallback .fx-rate{color:var(--amber-text)}
+@media(max-width:600px){.fx-card{padding:16px}.fx-grid{grid-template-columns:minmax(0,1fr);gap:8px}.fx-equals{display:none}.fx-field input{font-size:20px}}

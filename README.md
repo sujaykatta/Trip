@@ -295,3 +295,7 @@ The Map section renders an offline SVG basemap with numbered dates and a day sli
 - On screens wider than 1024px the page is a 60/40 split: every day's timeline on the left, and on the right a map that stays in view and follows the day you are reading (India–Vietnam overview on international flight days, the Vietnam route otherwise) with that day's flights, stays and the "Open full map" link to the Map tab. On phones the map is a collapsible drawer above the days.
 - Timeline rows are compact three-part cards: time and connector on the left, category badge, title, location and actions in the middle, a 140×100 thumbnail on the right.
 - Scrolling updates the active pill, the title, the overview highlight and the side map (scroll-spy). Clicking a pill, an overview row, Previous/Next or the slider scrolls to that day. The Trip Summary is the final section.
+
+### Dong ⇄ rupee converter (3 November 2026)
+
+The top of Overview converts Vietnamese dong to Indian rupees and back: type in either box, or use the quick amounts. The rate is today's market rate from ExchangeRate-API (`open.er-api.com`), with Currency API (`latest.currency-api.pages.dev`) as a fallback. Both are free, need no key and are allowed in the CSP `connect-src`. The rate is cached in this browser for the day. If neither service answers, the converter uses the last rate it fetched, or the trip's agreed VND rate from Trip settings, and says so. The converter is for reference only: expenses still use the agreed rates saved with each bill.
