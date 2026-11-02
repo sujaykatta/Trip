@@ -73,7 +73,16 @@ window.TripAPI = (() => {
       const record=TripCore.expense({title:e[0],amount:e[1],category:e[2],payerId:e[3],currency:'INR',rate:'1',date:'2026-11-'+(12+Math.floor(i/2)),participants:TripCore.MEMBERS.map(u=>u.id),splitType:'equal',notes:'Illustrative sample expense. Not a real booking.'});
       const id='sample-expense-'+i;state.expenses.push({...record,splits:undefined,id,ownerId:e[3],version:1,createdAt:now,updatedAt:now});state.splits.push(...record.splits.map(s=>({...s,expenseId:id,version:1})));state.notifications.push({id:'sample-event-'+i,actorId:e[3],action:'Added an expense',entityId:id,createdAt:now});
     });
-    [['Pack a universal adapter','checklist','Packing','A small thing that makes a big difference.'],['An evening in Hoi An','activity','Places to visit','Walk the lantern-lit streets and find a spot by the river.'],['Save your travel insurance','checklist','Insurance','Add your policy to the vault before departure.']].forEach((d,i)=>state.documents.push({id:'sample-doc-'+i,title:d[0],kind:d[1],category:d[2],notes:d[3],ownerId:'sujay',sharedWith:TripCore.MEMBERS.map(u=>u.id),version:1,createdAt:now,updatedAt:now,checked:false,date:i===1?'2026-11-16':''}));
+    const sampleFile={mimeType:'application/pdf',base64:btoa('%PDF-1.4\n1 0 obj\n<< /Title (Travel Credential) >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF')};
+    [['Pack a universal adapter','checklist','Packing','A small thing that makes a big difference.','',''],
+     ['An evening in Hoi An','activity','Places to visit','Walk the lantern-lit streets and find a spot by the river.','','2026-11-16'],
+     ['Care Health Travel Insurance Policy','file','Insurance','Policy #TVL-2026-881920. Medical emergency & travel assistance. 24/7 hotline: +84-28-3829-1234.','travel-insurance-policy.pdf','2026-12-28'],
+     ['Vietnam E-Visa — Sujay','file','Visa','Electronic visa approval for entry at SGN (Tan Son Nhat). Valid 17–27 Dec 2026.','vietnam-evisa-sujay.pdf','2026-12-17'],
+     ['Sujay’s Passport copy','file','Passport','Passport valid through May 2030. 6+ months validity verified for Vietnam entry.','passport-copy-sujay.pdf','2030-05-20']].forEach((d,i)=>{
+      const id='sample-doc-'+i,isFile=d[1]==='file';
+      state.documents.push({id,title:d[0],kind:d[1],category:d[2],notes:d[3],filename:d[4]||'',mimeType:isFile?'application/pdf':'',size:isFile?124000:0,ownerId:'sujay',sharedWith:TripCore.MEMBERS.map(u=>u.id),version:1,createdAt:now,updatedAt:now,checked:false,date:d[5]||''});
+      if(isFile&&d[4])state.files[id]={...sampleFile,filename:d[4]};
+    });
     return state;
   }
   function snapshot() {

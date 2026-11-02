@@ -380,6 +380,52 @@
       "updatedAt": "2026-10-15T16:00:27.973Z",
       "checked": false,
       "date": ""
+    },
+    {
+      "id": "sample-doc-3",
+      "title": "Vietnam E-Visa — Sujay",
+      "kind": "file",
+      "category": "Visa",
+      "notes": "Electronic visa approval for entry at SGN (Tan Son Nhat). Valid 17–27 Dec 2026.",
+      "filename": "vietnam-evisa-sujay.pdf",
+      "mimeType": "application/pdf",
+      "size": 124000,
+      "ownerId": "sujay",
+      "sharedWith": [
+        "sujay",
+        "niyanth",
+        "vishanu",
+        "pujitha",
+        "vedavathi"
+      ],
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z",
+      "checked": false,
+      "date": "2026-12-17"
+    },
+    {
+      "id": "sample-doc-4",
+      "title": "Sujay’s Passport copy",
+      "kind": "file",
+      "category": "Passport",
+      "notes": "Passport valid through May 2030. 6+ months validity verified for Vietnam entry.",
+      "filename": "passport-copy-sujay.pdf",
+      "mimeType": "application/pdf",
+      "size": 124000,
+      "ownerId": "sujay",
+      "sharedWith": [
+        "sujay",
+        "niyanth",
+        "vishanu",
+        "pujitha",
+        "vedavathi"
+      ],
+      "version": 1,
+      "createdAt": "2026-10-15T16:00:27.973Z",
+      "updatedAt": "2026-10-15T16:00:27.973Z",
+      "checked": false,
+      "date": "2030-05-20"
     }
   ],
   "notifications": [
