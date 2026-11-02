@@ -122,3 +122,99 @@ h1[tabindex="-1"]:focus,#modal-title:focus{outline:none}
 [data-theme=dark] .leaflet-container a{color:var(--green)}
 [data-theme=dark] .leaflet-bar a{background:var(--panel-solid);color:var(--text);border-color:var(--line)}
 [data-theme=dark] .leaflet-control-attribution{background:#17231dcc;color:var(--muted)}
+/* ===== Itinerary dashboard: sticky day bar, 60/40 split, semantic pills, compact timeline cards ===== */
+:root{--blue-soft:#e3ecf7;--blue-text:#2b4a78;--amber-soft:#f8ead6;--amber-text:#7a4f16;--teal-soft:#dff0f0;--teal-text:#1f6b69}
+[data-theme=dark]{--blue-soft:#26364c;--blue-text:#b9cdea;--amber-soft:#4a3a26;--amber-text:#ecc89a;--teal-soft:#1f3a3a;--teal-text:#8fd0cd}
+.day-bar{position:sticky;top:0;z-index:20;padding:10px 12px 8px;margin:0 0 22px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid var(--line);border-radius:18px;scroll-margin-top:12px}
+.day-bar-row{display:flex;align-items:center;gap:8px}
+.day-bar .day-strip{flex:1;display:flex;gap:6px;overflow-x:auto;padding:3px 2px;scroll-snap-type:x proximity;scrollbar-width:none}
+.day-bar .day-strip::-webkit-scrollbar{display:none}
+.day-bar .day-chip{flex:0 0 auto;min-width:54px;padding:8px 9px;display:grid;justify-items:center;gap:2px;border:1px solid var(--line);border-radius:13px;background:var(--panel-solid);color:var(--text);scroll-snap-align:center;transition:background .15s,color .15s,border-color .15s}
+.day-bar .day-chip strong{font-size:18px;line-height:1;letter-spacing:-.02em}
+.day-bar .day-chip small{font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--muted)}
+.day-bar .day-chip .icon{width:16px;height:16px;color:var(--green)}
+.day-bar .day-chip[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
+.day-bar .day-chip[aria-pressed=true] small,.day-bar .day-chip[aria-pressed=true] .icon{color:#e4efe2}
+.day-arrow{flex:0 0 auto;width:34px;height:34px}.day-arrow .icon{width:16px;height:16px}.day-arrow-prev .icon{transform:rotate(180deg)}.day-arrow:disabled{opacity:.35}
+.day-bar-meta{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:8px;padding:0 4px}
+.day-bar-title{font-size:12px;font-weight:600;color:var(--text)}
+.day-bar .day-range-label{margin:0;flex:0 0 min(320px,42%);justify-content:flex-end}
+.day-bar .day-range-label input{flex:1;max-width:220px}
+.itinerary-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:stretch}
+.itinerary-main{min-width:0}
+.itinerary-side{min-width:0}
+.itinerary-map-drawer summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border:1px solid var(--line);border-radius:16px;background:var(--panel-solid);cursor:pointer;font-size:12px;font-weight:600}
+.itinerary-map-drawer summary::-webkit-details-marker{display:none}
+.itinerary-map-drawer summary>span{display:inline-flex;align-items:center;gap:8px}.itinerary-map-drawer summary .icon{width:16px;height:16px;color:var(--green)}
+.itinerary-map-drawer[open] summary{margin-bottom:12px}.itinerary-map-drawer[open] summary>.icon{transform:rotate(180deg)}
+.itinerary-map-card{overflow:hidden}
+.itinerary-map-canvas{position:relative}
+.itinerary-map-canvas .vietnam-route-map{display:block;width:100%;height:auto}
+.itinerary-map-card .international-flight-visual{border:0;box-shadow:none;border-radius:0;margin:0}
+.itinerary-map-agenda{padding:4px 20px 8px}
+.itinerary-map-agenda h3{display:flex;align-items:center;gap:8px;font-size:12px;margin:14px 0 2px}.itinerary-map-agenda h3 .icon{width:15px;height:15px;color:var(--green)}
+.itinerary-map-agenda .map-event{padding:12px 0}.itinerary-map-agenda .map-event time{font-weight:700;font-size:12px;min-width:44px}.itinerary-map-agenda .map-event strong{font-size:12px}.itinerary-map-agenda .map-event small{display:block;font-size:10px;color:var(--muted)}
+.itinerary-map-agenda .map-stay{padding:10px 0}.itinerary-map-agenda .map-stay strong{font-size:12px}.itinerary-map-agenda .map-stay small{font-size:10px;color:var(--muted)}
+.itinerary-map-agenda .map-gap{margin:12px 0 4px}
+.itinerary-map-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 20px 12px;border-top:1px solid var(--line)}.itinerary-map-foot .map-source{padding:0}
+@media(min-width:1025px){.itinerary-layout{grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:26px}.itinerary-side{align-self:stretch}.itinerary-map-drawer.is-desktop{height:100%}.itinerary-map-sticky{position:sticky;top:calc(var(--day-bar-h,118px) + 14px);max-height:calc(100vh - var(--day-bar-h,118px) - 40px);overflow:auto;scrollbar-width:thin}}
+@media(max-width:1024px){.itinerary-side{order:-1}.itinerary-map-sticky{position:static}}
+/* Overview accordion */
+details.journey-sheet>summary.journey-sheet-heading{list-style:none;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:0}
+details.journey-sheet>summary::-webkit-details-marker{display:none}
+details.journey-sheet[open]>summary.journey-sheet-heading{margin-bottom:26px}
+.journey-toggle{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);color:var(--green);flex:0 0 auto}.journey-toggle .icon{width:16px;height:16px;transition:transform .2s}
+details.journey-sheet[open] .journey-toggle .icon{transform:rotate(180deg)}
+details.journey-sheet:not([open]){padding-bottom:30px}
+.journey-destination{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding-right:0}
+.journey-via{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--green);flex:0 0 auto}.journey-via .icon{width:12px;height:12px}
+.journey-via-plane{background:var(--blue-soft);color:var(--blue-text)}.journey-via-boat{background:var(--teal-soft);color:var(--teal-text)}
+.journey-tag{display:inline-flex;align-items:center;gap:5px}.journey-tag .icon{width:11px;height:11px;flex:0 0 auto}
+.journey-tag.is-flight,.journey-tag.is-transit{background:var(--blue-soft);color:var(--blue-text);border-color:transparent}
+.journey-tag.is-boat{background:var(--teal-soft);color:var(--teal-text);border-color:transparent}
+.journey-tag.is-stay{background:var(--amber-soft);color:var(--amber-text);border-color:transparent}
+.journey-tag.is-plan{background:var(--soft);color:var(--green);border-color:transparent}
+.journey-tag.is-optional{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.journey-stop .journey-date-options{display:inline-flex;flex-wrap:wrap;gap:3px;margin:0 24px 16px 213px;padding:3px;border:1px solid var(--line);border-top:1px solid var(--line);border-radius:12px;background:var(--panel-solid)}
+.journey-stop .journey-date-options button{border:0;border-radius:9px;padding:6px 10px;display:grid;justify-items:center;gap:1px;font-size:11px;background:transparent;color:var(--text)}
+.journey-stop .journey-date-options button small{font-size:9px;letter-spacing:.12em;color:var(--muted)}
+.journey-stop .journey-date-options button[aria-pressed=true]{background:var(--green);color:#fff}.journey-stop .journey-date-options button[aria-pressed=true] small{color:#e4efe2}
+@media(max-width:900px){.journey-stop .journey-date-options{margin-left:182px}}
+@media(max-width:600px){.journey-stop .journey-date-options{margin:0 15px 14px}}
+/* Day cards and compact timeline rows */
+.day-timeline{margin-bottom:22px;scroll-margin-top:calc(var(--day-bar-h,118px) + 14px);transition:border-color .2s}
+.day-timeline.is-active{border-color:var(--green)}
+.summary-anchor{scroll-margin-top:calc(var(--day-bar-h,118px) + 14px)}
+.day-heading{padding:20px 22px 6px}.day-heading h2{font-size:21px}
+.timeline-list{padding:6px 22px 4px}
+.day-timeline .timeline-event{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:12px 16px;align-items:start;margin:0 0 12px;padding:16px 18px;position:relative;background:var(--panel-solid);border:1px solid var(--line);border-radius:14px}
+.day-timeline .timeline-event:before{content:'';position:absolute;left:22px;top:32px;bottom:-13px;width:1px;background:var(--line)}
+.day-timeline .timeline-event:last-child:before{display:none}
+.day-timeline .timeline-time{position:relative;display:grid;gap:2px;padding:1px 0 0 16px;align-items:start}
+.day-timeline .timeline-time strong{font-size:17px;letter-spacing:-.02em;line-height:1.2}
+.day-timeline .timeline-time small{font-size:9px;color:var(--muted)}
+.timeline-dot{position:absolute;left:0;top:6px;width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--soft)}
+.kind-flight .timeline-dot,.kind-transit .timeline-dot{background:var(--blue-text);box-shadow:0 0 0 3px var(--blue-soft)}
+.kind-boat .timeline-dot{background:var(--teal-text);box-shadow:0 0 0 3px var(--teal-soft)}
+.kind-stay .timeline-dot{background:var(--amber-text);box-shadow:0 0 0 3px var(--amber-soft)}
+.kind-optional .timeline-dot{background:var(--muted);box-shadow:0 0 0 3px var(--line)}
+.timeline-badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.kind-badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:20px;background:var(--soft);color:var(--green)}.kind-badge .icon{width:11px;height:11px}
+.kind-badge.is-flight,.kind-badge.is-transit{background:var(--blue-soft);color:var(--blue-text)}.kind-badge.is-boat{background:var(--teal-soft);color:var(--teal-text)}.kind-badge.is-stay{background:var(--amber-soft);color:var(--amber-text)}.kind-badge.is-optional{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.day-timeline .timeline-event h3{font-size:16px;line-height:1.4;margin:8px 0 3px}
+.timeline-location{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin:0}.timeline-location .icon{width:12px;height:12px;flex:0 0 auto}
+.day-timeline .timeline-content>p:not(.timeline-location){font-size:12px;color:var(--muted);margin-top:5px;max-width:60ch;line-height:1.6}
+.day-timeline .timeline-actions{margin-top:10px;gap:10px}
+.day-timeline .plan-photo{grid-column:3;margin:0;width:140px;max-width:140px}
+.day-timeline .plan-photo img{display:block;width:140px;height:100px;object-fit:cover;border-radius:10px}
+.day-timeline .plan-photo figcaption{font-size:9px;line-height:1.5;margin-top:5px;max-width:140px}
+.day-empty{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 18px;border:1px dashed var(--line);border-radius:14px;margin-bottom:8px}
+.day-empty .empty-icon{width:36px;height:36px;margin:0}.day-empty h3{font-size:15px;margin:0 0 2px}.day-empty p{font-size:12px;color:var(--muted);margin:0}.day-empty>div{flex:1;min-width:180px}
+.day-timeline .daily-hotel-summary{margin:4px 22px 20px;padding:14px 16px;background:var(--soft);border-radius:14px}
+.daily-hotel-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.daily-hotel-heading strong{display:inline-flex;align-items:center;gap:7px;font-size:12px}.daily-hotel-heading .icon{width:15px;height:15px;color:var(--green)}
+.day-timeline .daily-hotel-row{display:flex;align-items:center;gap:12px;padding:10px 0 0;border:0;flex-wrap:wrap}
+.day-timeline .daily-hotel-row>div{flex:1;min-width:0}.day-timeline .daily-hotel-summary .empty-inline{margin:8px 0 0;font-size:11px}
+@media(max-width:740px){.day-bar{padding:8px 8px 6px;border-radius:0 0 16px 16px;margin:0 -4px 18px}.day-bar-meta{margin-top:6px}.day-bar .day-range-label span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.day-bar .day-range-label{flex:0 0 38%}.day-heading{padding:16px 16px 4px}.timeline-list{padding:4px 14px 2px}.day-timeline .daily-hotel-summary{margin:4px 14px 16px}}
+@media(max-width:600px){.day-timeline .timeline-event{grid-template-columns:58px minmax(0,1fr);gap:10px 12px;padding:14px}.day-timeline .timeline-event:before{left:18px}.day-timeline .timeline-time{padding-left:14px}.day-timeline .timeline-time strong{font-size:15px}.day-timeline .plan-photo{grid-column:1/-1;width:100%;max-width:100%}.day-timeline .plan-photo img{width:100%;height:150px}.day-timeline .plan-photo figcaption{max-width:none}}
+.day-bar-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}

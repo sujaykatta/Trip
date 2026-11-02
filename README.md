@@ -287,3 +287,11 @@ The Map section renders an offline SVG basemap with numbered dates and a day sli
 - If the live backend has not been redeployed with a newer action, the app says the backend needs redeploying instead of showing “Unknown operation.”
 - Place names match airport codes only when written as codes, so “Han River, Da Nang” stays in Da Nang. With trip start and end dates set, the day strip follows those dates; plans dated outside them are listed for editing.
 - Payment shortcuts follow the suggested settlement plan and subtract payments already awaiting confirmation.
+
+### Itinerary dashboard (3 November 2026)
+
+- The date pills sit in a **sticky bar** at the top of the Itinerary. Each pill shows the day number and a three-letter destination code taken from that day's flights and plans (HYD, SGN, PQC, HAN, LHB for Lan Ha / Ha Long cruise days, DAD). The bar also holds Previous/Next, the day slider and the day title.
+- **One journey. So many memories.** is a collapsible overview. Destinations are joined by a plane, car or boat icon depending on how that day moves between them. Pills are colour-coded: blue for flights and transfers, teal for boats, amber for stays, sage for activities, dashed for optional stops. Multi-day stays show their dates as a segmented control.
+- On screens wider than 1024px the page is a 60/40 split: every day's timeline on the left, and on the right a map that stays in view and follows the day you are reading (India–Vietnam overview on international flight days, the Vietnam route otherwise) with that day's flights, stays and the "Open full map" link to the Map tab. On phones the map is a collapsible drawer above the days.
+- Timeline rows are compact three-part cards: time and connector on the left, category badge, title, location and actions in the middle, a 140×100 thumbnail on the right.
+- Scrolling updates the active pill, the title, the overview highlight and the side map (scroll-spy). Clicking a pill, an overview row, Previous/Next or the slider scrolls to that day. The Trip Summary is the final section.

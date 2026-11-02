@@ -94,3 +94,11 @@ Run this on the actual published HTTPS Pages site after configuring Apps Script.
 - [ ] Opening a city map, switching theme and returning keeps a single map with pins numbered 1, 2, 3… and upright numbers.
 - [ ] A toast raised while a dialog is open (copy PNR, download) appears inside the dialog.
 - [ ] On an iPhone, focusing the expense search or filters does not zoom the page.
+
+## Itinerary dashboard (added 3 November 2026)
+
+- [ ] On a laptop the date bar stays pinned while scrolling; pills show the day number and destination code; the map column stays in view and switches between the India–Vietnam overview and the Vietnam route as the active day changes.
+- [ ] Scrolling through the days highlights the matching pill and overview row; clicking a pill, Previous/Next, the slider or an overview row scrolls that day under the bar.
+- [ ] The overview collapses and stays collapsed after adding or editing a plan.
+- [ ] Flights/transfers, stays, activities and optional stops are visibly different colours in both the overview and the day cards.
+- [ ] On a phone the map drawer sits above the days and is closed by default; the bar fits at 320px.
