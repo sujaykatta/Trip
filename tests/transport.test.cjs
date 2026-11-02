@@ -86,3 +86,13 @@ test('an RPC timeout drops the stale bridge, the next call reconnects, session e
  let resolved=false;api.logout().then(()=>resolved=true);await settle();assert.equal(resolved,true);
  assert.equal(messages[5].request.action,'logout');assert.equal(messages[5].request.token,'u'.repeat(64));
 });
+test('sign-in connects once: a copy on another origin fails at once without loading the bridge, the published origin connects',async()=>{
+ const build=href=>{const frames=[];const context={crypto:crypto.webcrypto,Map,Array,Promise,Error,Uint8Array,URL,console,setTimeout:()=>0,clearTimeout:()=>{},TripPasswords:{isAccessCode:v=>/^[a-f0-9]{64}$/.test(v)},
+  window:{location:{origin:href},TRIP_CONFIG:{appsScriptUrl:'https://script.google.com/macros/s/TEST/exec',frontendOrigin:'https://owner.github.io'},addEventListener:()=>{}},
+  document:{createElement:()=>({remove(){}}),body:{append:frame=>frames.push(frame)}}};vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../api.js'),'utf8'),context);return {api:context.window.TripAPI,frames};};
+ const local=build('http://localhost:4174');
+ await assert.rejects(local.api.connectBridge(),/only works on the published site \(https:\/\/owner\.github\.io\)/);
+ assert.equal(local.frames.length,0,'no bridge frame is created on an origin the bridge will not answer');
+ const published=build('https://owner.github.io');published.api.connectBridge().catch(()=>{});await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(published.frames.length,1,'the published origin starts exactly one connection attempt');
+});

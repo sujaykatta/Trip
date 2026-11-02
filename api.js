@@ -37,6 +37,9 @@ window.TripAPI = (() => {
     if(ready) return ready;
     const url=window.TRIP_CONFIG.appsScriptUrl;
     if(!/^https:\/\/script\.google\.com\/macros\/s\/[a-zA-Z0-9_-]+\/exec$/.test(url)) return Promise.reject(new Error('Connect Google Sheets first. See the setup guide, or explore the sample trip.'));
+    // The bridge only posts to the configured origin; anywhere else it would stay silent until both 30-second attempts time out.
+    const allowed=window.TRIP_CONFIG.frontendOrigin,here=window.location?.origin;
+    if(allowed&&here&&here!==allowed) return Promise.reject(new Error(`Live sign-in only works on the published site (${allowed}). This copy runs at ${here}, which the Google bridge does not answer. Use “Take a look around” to explore sample data here.`));
     ready=new Promise((resolve,reject)=>{
       let attempt=0,timer;
       const fail=()=>{
@@ -135,6 +138,8 @@ window.TripAPI = (() => {
   }
   return {
     prepareLogin(){return mode==='live'?connect().then(()=>true,()=>false):Promise.resolve(false);},
+    // Sign-in connects once; a failure here is final, so login() never starts a second pair of attempts.
+    async connectBridge(){mode='live';await connect();},
     async login(userId,code){mode='live';code=normalizeCode(code);let r;try{r=await live('login',{userId,code:TripPasswords.isAccessCode(String(code).trim())?String(code).trim():await credential(userId,code)});}catch(error){throw normalizeError(error);}token=r.token;return r.data;},
     async changePassword(userId,currentPassword,newPassword,confirmation,requestId){
       TripCore.assert(mode==='live','Password changes are available in your private account.');

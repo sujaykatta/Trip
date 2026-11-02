@@ -95,7 +95,8 @@ The recommended setup creates a fresh correctly structured Sheet. To use a diffe
 ```js
 window.TRIP_CONFIG = {
   appsScriptUrl: 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec',
-  allowPreview: true
+  allowPreview: true,
+  frontendOrigin: 'https://YOUR_USERNAME.github.io' // same value as FRONTEND_ORIGIN
 };
 ```
 
@@ -281,6 +282,7 @@ The Map section renders an offline SVG basemap with numbered dates and a day sli
 
 - Phones show Home, Itinerary, Map and Expenses in the bottom bar. **More** opens a sheet with Flights, Shared vault, Admin (Sujay only), My account, Refresh trip and the theme switch.
 - Each page has its own address (`#home`, `#expenses`, …). Browser Back and Forward move between pages without signing out. Reloading a private session still signs out, so the browser asks first.
+- Live sign-in works only on the address in `frontendOrigin` (the backend's `FRONTEND_ORIGIN`). A local copy says so immediately instead of waiting for the bridge to time out; use **Take a look around** there. A real connection failure is reported after one pair of 30-second attempts.
 - If a Google request times out, the app drops that bridge and reconnects on the next action. An expired eight-hour session returns to the sign-in screen with a message. Sign out never waits on the network.
 - If the live backend has not been redeployed with a newer action, the app says the backend needs redeploying instead of showing “Unknown operation.”
 - Place names match airport codes only when written as codes, so “Han River, Da Nang” stays in Da Nang. With trip start and end dates set, the day strip follows those dates; plans dated outside them are listed for editing.

@@ -183,7 +183,7 @@ document.addEventListener('change',event=>{const el=event.target;if(el.type==='d
 document.addEventListener('submit',async event=>{event.preventDefault();const form=event.target;if(busy||form.dataset.scanning)return;const submit=$('[type="submit"]',form);const oldText=submit.innerHTML;busy=true;submit.disabled=true;submit.innerHTML='<span class="spinner"></span> '+({'login-form':'Signing in…','password-form':'Updating password…'}[form.id]||'Saving…');$('.form-error',form).hidden=true;
   try{
     const f=new FormData(form);let p=Object.fromEntries(f.entries());delete p.scanImage;const requestId=form.dataset.requestId;
-    if(form.id==='login-form'){if(TRIP_CONFIG.appsScriptUrl){submit.innerHTML='<span class="spinner"></span> Connecting to Google…';await TripAPI.prepareLogin();submit.innerHTML='<span class="spinner"></span> Signing in…';}data=await TripAPI.login(selectedUser,p.code);page='home';history.replaceState({page:'home'},'','#home');}
+    if(form.id==='login-form'){if(TRIP_CONFIG.appsScriptUrl){submit.innerHTML='<span class="spinner"></span> Connecting to Google…';await TripAPI.connectBridge();submit.innerHTML='<span class="spinner"></span> Signing in…';}data=await TripAPI.login(selectedUser,p.code);page='home';history.replaceState({page:'home'},'','#home');}
     else if(form.id==='password-form'){await TripAPI.changePassword(data.me.id,p.currentPassword,p.newPassword,p.confirmation,requestId);form.reset();data=null;page='home';resetAdminReport();$('#modal').close();welcome();toast('Password changed. Sign in with your new password.');return;}
     else if(form.id==='expense-form'){
       const receipt=await readFile(f.get('receipt'));p=expensePayload(form);const result=await mutate('saveExpense',p,requestId);
