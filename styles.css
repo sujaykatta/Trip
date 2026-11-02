@@ -83,3 +83,13 @@
 [data-theme=dark] .international-map-land{fill:#34483e;stroke:#506852}[data-theme=dark] .international-map-focus{fill:#56734e;stroke:#819772}[data-theme=dark] .international-country-label{fill:#c4d5b7}[data-theme=dark] .international-sea-label{fill:#99b5a8}
 @media(max-width:600px){.international-map-heading{padding:20px;align-items:flex-start}.international-map-heading h2{font-size:22px}.international-map-heading>span{font-size:12px}.international-flight-cards{padding:16px 16px 0}.international-flight-card{align-items:flex-start;flex-direction:column;gap:11px;padding:16px}.international-flight-details{margin-left:0}.international-flight-codes{font-size:22px}.international-map-note{padding:15px 20px 20px}.has-international-map .map-day-details{grid-template-columns:minmax(0,1fr)}}
 .has-international-map .map-canvas-title{position:static;inset:auto;padding:18px 24px 0;gap:12px;line-height:1.5}.has-international-map .map-canvas-title strong{white-space:nowrap}
+/* UX pass: shared controls added in Phase 3 */
+:where(button.brand){background:none;border:0;padding:0;margin:0;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.file-current{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--soft);margin:0 0 14px}
+.file-current span{display:grid;gap:3px}.file-current small{color:var(--muted);font-size:11px}
+.home-more-events{margin:6px 0 0 4px}
+.personal-payment .row-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.pending-to-me .settlement-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border:0}
+.pending-to-me p{margin:4px 0 6px}
+.scan-stop{margin-top:4px}
+.plan-note{font-size:12px;font-weight:600;color:var(--muted)}

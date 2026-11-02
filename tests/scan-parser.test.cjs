@@ -3,3 +3,10 @@ test('receipt scanner chooses actual paid amount instead of crossed-out fare or 
 test('flight scan extracts reviewable route, local times, dates and PNR without marking a booking confirmed',()=>{const r=P.parse('VietJet Air VJ123\nPQC HAN\n07:35 09:40\n21 Feb 2027 21 Feb 2027\nPNR: TEST99\nBooking in progress\nAmount paid INR 12,340');assert.equal(r.flight.departure,'Phu Quoc (PQC)');assert.equal(r.flight.arrivalAt,'2027-02-21T09:40');assert.equal(r.flight.pnr,'TEST99');assert.equal(r.expense.amount,'12340');assert.equal(r.flight.status,undefined);});
 test('unknown routes and missing prices stay blank; invalid dates are discarded',()=>{const r=P.parse('Ticket VJ123\nSome city\nAmount pending\n30 Feb 2027');assert.equal(r.flight.departure,undefined);assert.equal(r.expense.amount,undefined);assert.equal(r.expense.date,undefined);});
 test('hotel scan extracts potential date range and uses only recognizable passenger names',()=>{const r=P.parse('Example Hotel\nPhu Quoc\n10 March 2027\n12 March 2027\nTestuser\nUnknown Person',[{id:'testuser',name:'Testuser'},{id:'other',name:'Other'}]);assert.equal(r.hotel.title,'Example Hotel');assert.equal(r.hotel.endDate,'2027-03-12');assert.deepEqual(r.expense.participants,['testuser']);assert.equal(r.hotel.status,undefined);});
+test('VND totals grouped with dots or after the number keep their full value; a plain TOTAL line is read',()=>{
+ const P=require('../scan-parser.js');
+ assert.deepEqual({...P.paid('Total: VND 1.500.000')},{amount:'1500000',currency:'VND'});
+ assert.deepEqual({...P.paid('Grand total\n1.500.000 ₫')},{amount:'1500000',currency:'VND'});
+ assert.equal(P.paid('TOTAL 450.00 USD').amount,'450.00');
+ assert.equal(P.paid('Amount paid ₹26,440').amount,'26440');
+});
