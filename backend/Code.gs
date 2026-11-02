@@ -66,9 +66,12 @@ function session_(token, db) {
   var user = db.Users.find(u=>u.id === s.userId && u.status === 'active');
   TripCore.assert(user, 'Account is unavailable.'); return user;
 }
+// codeHash holds the traveler's own credential (original access code hash, or p1$salt$hash for a password),
+// optionally followed by |c$hash for one admin-issued access code. Any of them signs in.
+function credentials_(user) { return String(user.codeHash || '').split('|').filter(Boolean); }
 function matchesCode_(user, code) {
-  var parts=String(user.codeHash).split('$');
-  return equal_(hashCode_(code),parts[0]==='p1'?parts[2]:user.codeHash);
+  var hashed=hashCode_(code);
+  return credentials_(user).some(function(part){var parts=part.split('$');return equal_(hashed,parts[0]==='p1'?parts[2]:parts[0]==='c'?parts[1]:part);});
 }
 function login_(payload, db) {
   var id = TripCore.text(payload.userId, 40); var key = 'ATTEMPT_' + (TripCore.MEMBERS.some(u => u.id === id) ? id : 'unknown');
@@ -131,7 +134,7 @@ function rpc(request) {
     var db=db_(), p=request.payload || {}, action=request.action;
     if(action==='authInfo') {
       var candidate=db.Users.find(u=>u.id===p.userId && u.status==='active');
-      var pieces=String(candidate ? candidate.codeHash : '').split('$');
+      var pieces=String(candidate ? (credentials_(candidate).find(part=>part.indexOf('c$')!==0)||'') : '').split('$');
       return {ok:true,result:{salt:pieces[0]==='p1'?pieces[1]:''}};
     }
     if(action==='login') return {ok:true,result:login_(p,db)};
@@ -170,19 +173,20 @@ function rpc(request) {
       props_().deleteProperty(attemptKey);props_().deleteProperty('ATTEMPT_'+user.id);
       return {ok:true,result:{passwordChanged:true}};
     }
-    // Passwords are never recoverable. The admin can only replace another traveler's credential with a fresh
-    // access code, which is returned once to the admin's browser and never stored or logged in readable form.
+    // Passwords are never recoverable. The admin can add one fresh access code next to a traveler's own
+    // password; it is returned once to the admin's browser and never stored or logged in readable form.
     if(action==='adminResetCode') {
       TripCore.assert(user.role==='admin','Only the trip admin can reset access codes.');
       var target=db.Users.find(u=>u.id===p.userId && u.status==='active');
       TripCore.assert(target,'Choose an active traveler.');
       TripCore.assert(target.id!==user.id,'Use Change password for your own account.');
       var freshCode=secret_();
-      write_(db,'Users',Object.assign({},target,{codeHash:hashCode_(freshCode),updatedAt:now_()}));
+      // Keep the traveler's own password; a newer reset replaces any earlier admin-issued code.
+      var kept=credentials_(target).filter(part=>part.indexOf('c$')!==0);
+      write_(db,'Users',Object.assign({},target,{codeHash:kept.concat(['c$'+hashCode_(freshCode)]).join('|'),updatedAt:now_()}));
       audit_(db,user,'Reset an access code',target.id,{},null,null,[user.id,target.id]);
       commitStarted=true;commit_(db);
-      var active=props_().getProperties();
-      Object.keys(active).filter(k=>k.startsWith('SESSION_')).forEach(k=>{if(JSON.parse(active[k]).userId===target.id)props_().deleteProperty(k);});
+      // Their password still works, so existing sessions stay signed in; only the lockout counters are cleared.
       props_().deleteProperty('ATTEMPT_'+target.id);props_().deleteProperty('PASSWORD_ATTEMPT_'+target.id);
       return {ok:true,result:{userId:target.id,code:freshCode}};
     }

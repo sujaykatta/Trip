@@ -72,17 +72,32 @@ test('password change failure keeps old credentials and sessions; repeated wrong
  assert.match(f.request(owner,'changePassword',payload).error,/Too many/);
  assert.equal(f.request('0'.repeat(64),'changePassword',payload).ok,false);
 });
-test('only the admin can reset another traveler’s access code; the reset revokes their sessions and old credential and is never logged',()=>{
+test('only the admin can add an access code for another traveler; their own password and sessions keep working and the code is never logged',()=>{
  const f=fixture(),admin=f.login('sujay'),member=f.login('niyanth'),other=f.login('pujitha');
  assert.match(f.request(other,'adminResetCode',{userId:'niyanth'}).error,/Only the trip admin/);
  assert.match(f.request(admin,'adminResetCode',{userId:'sujay'}).error,/Change password/);
  assert.match(f.request(admin,'adminResetCode',{userId:'nobody'}).error,/active traveler/);
  const r=f.request(admin,'adminResetCode',{userId:'niyanth'});assert.equal(r.ok,true,r.error);
  assert.equal(r.result.userId,'niyanth');assert.match(r.result.code,/^[a-f0-9]{64}$/);
- assert.equal(f.request(member,'load').ok,false,'existing sessions are revoked');
- assert.equal(f.request('','login',{userId:'niyanth',code:f.codes.niyanth}).ok,false,'old code no longer works');
+ assert.equal(f.request(member,'load').ok,true,'existing sessions stay signed in');
+ assert.equal(f.request('','login',{userId:'niyanth',code:f.codes.niyanth}).ok,true,'their own credential still works');
  assert.equal(f.request('','login',{userId:'niyanth',code:r.result.code}).ok,true,'new code signs in');
+ assert.equal(f.request('','authInfo',{userId:'niyanth'}).result.salt,'','authInfo still describes their own credential');
+ const again=f.request(admin,'adminResetCode',{userId:'niyanth'});assert.equal(again.ok,true,again.error);
+ assert.equal(f.request('','login',{userId:'niyanth',code:r.result.code}).ok,false,'a newer code replaces the earlier one');
+ assert.equal(f.request('','login',{userId:'niyanth',code:again.result.code}).ok,true);assert.equal(f.request('','login',{userId:'niyanth',code:f.codes.niyanth}).ok,true);
  assert.equal(f.request(other,'load').ok,true,'other travelers stay signed in');
- const stored=JSON.stringify(f.tables)+JSON.stringify(f.props);assert.equal(stored.includes(r.result.code),false,'the code is not stored or logged in readable form');
+ const stored=JSON.stringify(f.tables)+JSON.stringify(f.props);assert.equal(stored.includes(again.result.code),false,'the code is not stored or logged in readable form');
  const audit=f.tables.AuditLog.slice(1).map(row=>row.join('|')).find(row=>row.includes('Reset an access code'));assert.ok(audit,'reset is audited');
+});
+test('a traveler with a password keeps it after an admin code is added, and a later password change retires the admin code',()=>{
+ const f=fixture(),admin=f.login('sujay'),owner=f.login('vedavathi'),salt='e'.repeat(64),password='f'.repeat(64),later='a'.repeat(64);
+ assert.equal(f.request(owner,'changePassword',{currentCode:f.codes.vedavathi,newCode:password,salt}).ok,true);
+ const r=f.request(admin,'adminResetCode',{userId:'vedavathi'});assert.equal(r.ok,true,r.error);
+ assert.equal(f.request('','authInfo',{userId:'vedavathi'}).result.salt,salt,'password salt is still offered');
+ assert.equal(f.request('','login',{userId:'vedavathi',code:password}).ok,true,'password proof still signs in');
+ const viaCode=f.request('','login',{userId:'vedavathi',code:r.result.code});assert.equal(viaCode.ok,true,'admin code signs in');
+ assert.equal(f.request(viaCode.result.token,'changePassword',{currentCode:r.result.code,newCode:later,salt:'b'.repeat(64)}).ok,true,'the admin code can authorize a password change');
+ assert.equal(f.request('','login',{userId:'vedavathi',code:r.result.code}).ok,false,'a new password retires the admin code');
+ assert.equal(f.request('','login',{userId:'vedavathi',code:later}).ok,true);
 });

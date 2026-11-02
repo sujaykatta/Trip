@@ -105,5 +105,5 @@ Run this on the actual published HTTPS Pages site after configuring Apps Script.
 
 ## Admin account access (added 3 November 2026)
 
-- [ ] After redeploying the backend: as Sujay, reset a test-agreed traveler's code; their other browsers are signed out; their old password fails; the new code signs in; they can set a new password.
+- [ ] After redeploying the backend: as Sujay, create a new access code for a traveler who agrees to test it; they stay signed in; their current password still works; the new code also signs in; a second code replaces the first; setting a new password retires the code.
 - [ ] Copy code, Copy message and (on a phone) Share work; closing the dialog removes the code from the page; non-admins see no Account access panel and the backend rejects their reset requests.

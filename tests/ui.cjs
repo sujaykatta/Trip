@@ -141,11 +141,11 @@ try{
   if(await page.evaluate(()=>data.me.id)!=='sujay'){await page.locator('[data-page=profile]').first().click();await page.locator('[data-action=switch-preview][data-id=sujay]').click();}
   await page.locator('[data-page=admin]').first().click();const panel=page.locator('.admin-access-panel');await expect(panel).toContainText('nobody can read them');
   await expect(panel.locator('[data-action=admin-reset-code]')).toHaveCount(4);await expect(panel.locator('[data-action=admin-reset-code][data-id=sujay]')).toHaveCount(0);
-  await panel.locator('[data-action=admin-reset-code][data-id=niyanth]').click();await expect(page.locator('#modal-title')).toContainText('Reset Niyanth');
+  await panel.locator('[data-action=admin-reset-code][data-id=niyanth]').click();await expect(page.locator('#modal-title')).toContainText('New access code for Niyanth');
   await page.locator('[data-action=admin-reset-confirm]').click();await expect(page.locator('#modal-title')).toContainText('Niyanth’s new access code');
   const code=await page.locator('#reset-code').inputValue();assert.match(code,/^[a-f0-9]{64}$/);
   await page.locator('[data-action=copy-reset-code]').click();await expect(page.locator('#modal .toast')).toContainText('Access code copied');assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),code);
-  await page.locator('[data-action=copy-reset-message]').click();const message=await page.evaluate(()=>navigator.clipboard.readText());assert.ok(message.includes('Niyanth')&&message.includes(code)&&message.includes('Change password'));
+  await page.locator('[data-action=copy-reset-message]').click();const message=await page.evaluate(()=>navigator.clipboard.readText());assert.ok(message.includes('Niyanth')&&message.includes(code)&&message.includes('current password still works'));
   await page.keyboard.press('Escape');await expect(page.locator('#modal')).not.toBeVisible();await expect.poll(()=>page.evaluate(()=>resetCodeShown),{message:'the code is dropped when the dialog closes'}).toBe(null);
   assert.match(await page.evaluate(()=>TripAPI.call('adminResetCode',{userId:'sujay'}).then(()=> 'ok',e=>e.message)),/Change password/);
  });
