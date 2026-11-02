@@ -276,3 +276,12 @@ Chrome/Edge and other browsers supporting credentialless iframes load the anonym
 ### Local draft: day-by-day route map
 
 The Map section renders an offline SVG basemap with numbered dates and a day slider. It derives routes and destination areas from the visible trip snapshot, shows flights, daily plans and hotel options for a chosen date, and links into the itinerary. Country polygons and airport-area pin data are bundled locally, with no API keys or geocoding requests. Opening a city shows a Leaflet map whose OpenStreetMap raster tiles load from tile.openstreetmap.org (allowed in the CSP); visit pins come from the bundled coordinate list, not a geocoder. Routes are schematic and hotel options stay tentative. Missing onward connections are identified rather than filled with invented travel. Destination pins are area-level, not hotel addresses. Attribution is in assets/MAP-SOURCES.md. This section is a local draft and has not been deployed.
+
+### Phone navigation, history and recovery (3 November 2026)
+
+- Phones show Home, Itinerary, Map and Expenses in the bottom bar. **More** opens a sheet with Flights, Shared vault, Admin (Sujay only), My account, Refresh trip and the theme switch.
+- Each page has its own address (`#home`, `#expenses`, …). Browser Back and Forward move between pages without signing out. Reloading a private session still signs out, so the browser asks first.
+- If a Google request times out, the app drops that bridge and reconnects on the next action. An expired eight-hour session returns to the sign-in screen with a message. Sign out never waits on the network.
+- If the live backend has not been redeployed with a newer action, the app says the backend needs redeploying instead of showing “Unknown operation.”
+- Place names match airport codes only when written as codes, so “Han River, Da Nang” stays in Da Nang. With trip start and end dates set, the day strip follows those dates; plans dated outside them are listed for editing.
+- Payment shortcuts follow the suggested settlement plan and subtract payments already awaiting confirmation.

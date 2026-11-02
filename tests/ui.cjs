@@ -78,6 +78,32 @@ try{
  await check('password form validates confirmation and signs out after a successful private-account change',async()=>{
   await page.evaluate(()=>{Object.defineProperty(TripAPI,'mode',{get:()=> 'live'});const originalCall=TripAPI.call;TripAPI.call=(action,payload)=>action==='authInfo'?Promise.resolve({salt:''}):originalCall(action,payload);TripAPI.changePassword=async(user,current,next,confirm)=>{TripPasswords.validate(next,confirm);if(current!=='example-current-passphrase')throw new Error('Current credential incorrect.');return {passwordChanged:true};};});await mobileGo('profile');await page.getByRole('button',{name:'Change password',exact:true}).click();await page.getByRole('textbox',{name:'Current password or access code',exact:true}).fill('example-current-passphrase');await page.getByRole('textbox',{name:'New password',exact:true}).fill('example-replacement-passphrase');await page.getByRole('textbox',{name:'Confirm new password',exact:true}).fill('example-other-passphrase');await page.locator('#password-form [type=submit]').click();await expect(page.locator('.form-error')).toContainText('do not match');await page.getByRole('textbox',{name:'Confirm new password',exact:true}).fill('example-replacement-passphrase');await page.locator('#password-form [type=submit]').click();await expect(page.locator('.welcome')).toBeVisible();await expect(page.locator('#modal')).not.toBeVisible();await page.locator('[data-action=login][data-id=sujay]').click();await expect(page.getByRole('textbox',{name:'Password or access code',exact:true})).toHaveAttribute('maxlength','128');
  });
+ await check('city map numbers mapped visits consecutively, keeps pin numbers upright and keeps one Leaflet map across re-renders',async()=>{
+  await page.route('https://tile.openstreetmap.org/**',route=>route.fulfill({contentType:'image/png',body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=','base64')}));
+  if(await page.locator('#modal').evaluate(d=>d.open))await page.keyboard.press('Escape');
+  await page.setViewportSize({width:1440,height:1050});await page.locator('[data-action=preview]').click();await page.locator('.trip-hero').waitFor();
+  for(const [title,time] of [['Rooftop breakfast spot TBD','08:00'],['Tan Dinh Church (Pink Church)','10:00'],['The Cafe Apartments','12:00']]){
+   await page.locator('[data-page=itinerary]').first().click();await page.locator('.heading-actions [data-action=add-plan]').click();
+   await page.locator('#plan-form [name=title]').fill(title);await page.locator('#plan-form [name=location]').fill('Ho Chi Minh City');await page.locator('#plan-form [name=date]').fill('2026-11-14');await page.locator('#plan-form [name=time]').fill(time);
+   await page.locator('#plan-form [type=submit]').click();await expect(page.locator('#modal')).not.toBeVisible();
+  }
+  await page.locator('[data-page=map]').first().click();await page.locator('[data-action=map-day][data-id="2026-11-14"]').click();await page.locator('.map-pin[data-id=SGN]').dispatchEvent('click');
+  const markers=page.locator('#city-visit-map .leaflet-marker-icon');await expect(markers).toHaveCount(2);
+  assert.deepEqual(await markers.allInnerTexts(),['1','2'],'unmapped visits do not leave gaps in pin numbers');
+  assert.match(await page.locator('.visit-map-marker b').first().evaluate(b=>getComputedStyle(b).transform),/0\.707107, 0\.707107/,'number counter-rotated upright');
+  await page.locator('.top-actions [data-action=theme]').click();await page.locator('.top-actions [data-action=theme]').click();
+  await expect(page.locator('.leaflet-container')).toHaveCount(1);await expect(markers).toHaveCount(2);
+  await expect(page.locator('#city-map-note')).toContainText('2 visits');await expect(page.locator('#city-map-note')).toContainText('1 plan(s) still need');
+ });
+ await check('phone bottom bar fits 320px with readable labels, More and browser Back work, and toasts show over dialogs',async()=>{
+  await page.setViewportSize({width:320,height:700});await page.locator('.mobile-nav [data-page=home]').click();
+  assert.equal(await page.locator('.mobile-nav .nav-item').count(),5);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'320 overflow');
+  assert.ok((await page.locator('.mobile-nav .nav-item').evaluateAll(els=>els.map(e=>parseFloat(getComputedStyle(e).fontSize)))).every(size=>size>=11),'nav labels at least 11px');
+  await page.locator('.mobile-nav [data-page=expenses]').click();await mobileGo('flights');await expect(page).toHaveURL(/#flights$/);
+  await page.goBack();await expect(page).toHaveURL(/#expenses$/);await expect(page.getByRole('heading',{name:'Shared experiences. Fair splits.',exact:true})).toBeVisible();
+  await page.locator('.expense-row').first().click();await expect(page.locator('#modal')).toBeVisible();await page.evaluate(()=>toast('Visible over the dialog'));await expect(page.locator('#modal .modal-toasts .toast')).toBeVisible();
+  await page.keyboard.press('Escape');await expect(page.locator('#modal')).not.toBeVisible();await page.setViewportSize({width:1440,height:1050});
+ });
  assert.deepEqual(errors,[]);console.log('PASS no browser runtime or resource errors');
 }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

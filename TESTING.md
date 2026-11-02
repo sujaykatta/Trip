@@ -84,3 +84,13 @@ Run this on the actual published HTTPS Pages site after configuring Apps Script.
 - [ ] On an ambiguous service timeout, keep the form open and retry its same request ID. If closed, refresh history before creating another record.
 - [ ] Verify any orphan upload against `Documents` and `AuditLog` before moving it to trash; an ambiguous Sheets timeout may actually have committed.
 - [ ] Confirm current Google quotas support the group’s expected usage. This implementation has no offline real-data mode, automatic currency feed, virus scanner, push/email delivery or uptime guarantee.
+
+## Phone navigation and recovery (added 3 November 2026)
+
+- [ ] At 320 px and 390 px the bottom bar shows Home, Itinerary, Map, Expenses and More; More opens Flights, Shared vault, Admin (Sujay only), My account, Refresh and the theme switch.
+- [ ] Browser Back returns to the previous page while signed in; reloading a private session asks before signing out.
+- [ ] Leave a live session idle until a request times out, then retry: the next action reconnects without a page reload.
+- [ ] After eight hours, any action returns to sign-in with “Your session ended. Please sign in again.”
+- [ ] Opening a city map, switching theme and returning keeps a single map with pins numbered 1, 2, 3… and upright numbers.
+- [ ] A toast raised while a dialog is open (copy PNR, download) appears inside the dialog.
+- [ ] On an iPhone, focusing the expense search or filters does not zoom the page.
